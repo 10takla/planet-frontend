@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/10takla/planet-frontend/static/css/main.d158d024.css",
-    "main.js": "/10takla/planet-frontend/static/js/main.00393722.js",
-    "index.html": "/10takla/planet-frontend/index.html",
-    "main.d158d024.css.map": "/10takla/planet-frontend/static/css/main.d158d024.css.map",
-    "main.00393722.js.map": "/10takla/planet-frontend/static/js/main.00393722.js.map"
+    "main.css": "/10takla/planet-frontend/tree/gh-pages/static/css/main.d158d024.css",
+    "main.js": "/10takla/planet-frontend/tree/gh-pages/static/js/main.9df28801.js",
+    "index.html": "/10takla/planet-frontend/tree/gh-pages/index.html",
+    "main.d158d024.css.map": "/10takla/planet-frontend/tree/gh-pages/static/css/main.d158d024.css.map",
+    "main.9df28801.js.map": "/10takla/planet-frontend/tree/gh-pages/static/js/main.9df28801.js.map"
   },
   "entrypoints": [
     "static/css/main.d158d024.css",
-    "static/js/main.00393722.js"
+    "static/js/main.9df28801.js"
   ]
 }
