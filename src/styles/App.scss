@@ -1,0 +1,32 @@
+@import "store/store";
+@import "app messages/message";
+@import "head/head";
+
+.App {
+  .head-back {
+    .head {
+      z-index: 100;
+    }
+
+    .user-menu {
+      z-index: 98;
+    }
+
+    .form.sign, .form.registration {
+      z-index: 98;
+    }
+
+    .modal-back {
+      z-index: 99;
+    }
+  }
+
+  .all-messages {
+    z-index: 97;
+  }
+
+  .store {
+
+  }
+
+}

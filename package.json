@@ -3,16 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-three/drei": "^9.61.3",
+    "@react-three/fiber": "^8.12.0",
+    "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/delaunator": "^5.0.0",
+    "@types/gsap": "^3.0.0",
     "@types/jest": "^27.5.2",
+    "@types/jquery": "^3.5.16",
     "@types/node": "^16.18.14",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@types/react-redux": "^7.1.25",
+    "@types/react-transition-group": "^4.4.5",
+    "@types/three": "^0.150.1",
+    "color-convert": "^2.0.1",
+    "delaunator": "^5.0.0",
+    "gsap": "^3.11.5",
+    "jquery": "^3.6.4",
+    "jquery-ui": "^1.13.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
     "react-scripts": "5.0.1",
+    "react-spring": "^9.7.1",
+    "react-transition-group": "^4.4.5",
+    "sass": "^1.62.1",
+    "three": "^0.151.3",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -20,7 +39,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +60,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/jqueryui": "^1.12.16",
+    "gh-pages": "^5.0.0",
+    "ts-loader": "^9.4.2",
+    "webpack-dev-server": "^4.13.3"
   }
 }

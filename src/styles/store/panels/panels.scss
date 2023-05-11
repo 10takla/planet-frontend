@@ -1,0 +1,39 @@
+@import "planet/planets";
+@import "info/info";
+@import "actions/actions";
+
+:root {
+    --store-panels-padding: 0.5em;
+    --store-panels-action-height: 3.2em;
+}
+
+.store-panels {
+    width: 100%;
+    height: 100%;
+    row-gap: var(--store-panels-padding);
+    padding: var(--store-panels-padding);;
+    position: absolute;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.store-panels-top {
+    height: 90%;
+    overflow: hidden;
+    column-gap: var(--store-panels-padding);
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.store-panels-top-left {
+    width: 100%;
+    row-gap: var(--store-panels-padding);
+    display: flex;
+    flex-direction: column;
+}
+

@@ -1,0 +1,42 @@
+:root {
+    --animation-duration-head: 400ms;
+    --animation-duration-modal: 800ms;
+}
+
+/*Хэдэр окна*/
+.head-animation-window-enter {
+    transform: translateY(-100%);
+    transform-origin: top;
+}
+
+.head-animation-window-enter-active {
+    transform: translateY(0%);
+    transition: transform var(--animation-duration-head);
+}
+
+.head-animation-window-exit-active {
+    transform: translateY(-100%);
+    transition: transform var(--animation-duration-head);
+}
+
+/*Модалки*/
+.modal-animation-enter {
+    top: -100%;
+}
+
+.modal-animation-enter-active {
+    top: 100px;
+    transition: top var(--animation-duration-modal);
+}
+.modal-animation-enter-done{
+    top: 100px
+}
+
+.modal-animation-exit {
+    top: 100px;
+}
+
+.modal-animation-exit-active {
+    top: 100%;
+    transition: top var(--animation-duration-modal);
+}

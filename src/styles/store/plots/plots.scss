@@ -1,0 +1,61 @@
+@import "plotsForms/plotForm";
+@import "plotsForms/gallery";
+
+:root {
+  --raidus-info-img: 3.5em;
+  --width-info-img: 3em;
+}
+
+.store-window-plot {
+  pointer-events: auto;
+}
+
+.plot-user {
+  background: rgba(255, 0, 0, 0.35);
+  padding: 0.5em;
+  border-radius: 1em;
+}
+
+.plot-menu {
+  position: relative;
+  background: rgba(194, 227, 124, 0.53);
+  border: 0.2em #80cb42 solid;
+  border-radius: 50%;
+  width: calc(var(--raidus-info-img) * 0);
+  height: calc(var(--raidus-info-img) * 0);
+}
+
+.plot-menu:hover {
+  width: calc(var(--raidus-info-img) * 3);
+  height: calc(var(--raidus-info-img) * 3);
+  transition: all 500ms;
+}
+
+.plot-menu-button {
+  position: absolute;
+  top: calc(50% - (var(--width-info-img) / 2));
+  left: calc(50% - (var(--width-info-img) / 2));
+  box-sizing: border-box;
+  transform-origin: center center;
+  transition: transform 500ms;
+}
+
+.plot-menu-button img {
+  border-radius: 1em;
+  padding: 0.3em;
+  box-sizing: border-box;
+  width: var(--width-info-img);
+  background: #de59ee;
+}
+
+
+.plot-menu:hover .plot-menu-button:nth-child(n) {
+  transform: scale(1.2) rotate(calc(360deg / var(--n) * var(--i))) translate(calc(var(--raidus-info-img) * -1)) rotate(calc(-360deg / var(--n) * var(--i)));
+}
+
+.plot-menu img:hover {
+  background: rgba(76, 194, 105, 0.98);
+  transform: scale(1.2);
+  transition: transform 200ms;
+}
+

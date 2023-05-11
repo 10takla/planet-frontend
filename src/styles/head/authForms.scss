@@ -1,0 +1,77 @@
+.form.sign, .form.registration {
+  right: 0;
+  row-gap: 10px;
+  width: 250px;
+  padding: 20px;
+  background: #f1e1e1;
+  border-radius: 0px 0px 20px 20px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  > .title {
+    font-size: 1.3em;
+  }
+
+  > .close {
+    width: 2.5em;
+    position: absolute;
+    right: 0.7em;
+    top: 0.7em;
+  }
+
+  > .input {
+    padding: 0.2em 0.4em;
+    border: 0.1em solid #810808;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.2em;
+    align-items: stretch;
+    position: relative;
+    width: 11em;
+
+    .warning {
+      width: 1.2em;
+      position: absolute;
+      left: -1em;
+    }
+  }
+
+  > .button {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .errors {
+    text-align: center;
+
+    &.enter {
+      opacity: 0;
+    }
+
+    &.enter-active {
+      opacity: 1;
+      transition: all 300ms ease-in;
+    }
+
+    li {
+      list-style-type: none;
+      font-size: 0.8em;
+      color: #d50606;
+    }
+  }
+
+  .foot {
+    text-align: center;
+
+    > a {
+      color: #2121f8;
+    }
+  }
+}
+
+

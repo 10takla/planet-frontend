@@ -1,0 +1,33 @@
+.plot-content {
+    background: #00ff3c;
+    padding: 1em;
+    position: relative;
+}
+
+.plot-content-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.plot-content-title > h2 {
+    margin: 0;
+}
+
+.plot-content-title img {
+    background: red;
+    border-bottom-left-radius: 0.8em;
+    padding: 0.3em;
+    padding-block-start: 0;
+    padding-inline-end: 0;
+    width: 2em;
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
+.plot-content-title img:hover {
+    padding-inline-end: 1em;
+    transition: padding 300ms;
+}
+

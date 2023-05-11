@@ -1,0 +1,40 @@
+@import "headAnimations";
+@import "authForms";
+@import "modals/modals";
+@import "user/userHead";
+@import "user/userMenu";
+
+.head-back {
+  > .head {
+    position: relative;
+    background: #e9a3fc;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    > .home {
+      font-size: 1.3em;
+      text-decoration: none;
+      font-weight: bold;
+      color: #20638d;
+    }
+
+    .selectable {
+      cursor: pointer;
+    }
+
+    .selectable:hover {
+      transform: scale(1.05);
+      transition: all ease 300ms;
+    }
+
+    > .sign {
+      background: rgba(243, 243, 181, 0.68);
+      font-size: 1.1em;
+      border: 0.1em solid black;
+      padding: 0.5em 1em;
+      border-radius: 2em;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+:root {
+    --animation-duration-panels: 100ms
+}
+
+.store-animation-panels-enter {
+    transform: scaleY(0);
+    transform-origin: top;
+}
+
+.store-animation-panels-enter-active {
+    transform: scaleY(1);
+    transition: transform var(--animation-duration-panels);
+}
+
+.store-animation-panels-exit-active {
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform var(--animation-duration-panels);
+}
+
+
+.store-panels .selectable:hover{
+    transform: scale(1.2);
+}

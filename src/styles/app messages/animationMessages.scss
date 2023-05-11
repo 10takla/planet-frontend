@@ -1,0 +1,48 @@
+:root {
+    --animation-messages-duration: 150ms;
+    --animation-messages-item-duration: 200ms;
+    --animation-notices-item-duration: 100ms;
+}
+
+/**/
+.logs-block {
+    transition: right var(--animation-messages-duration);
+    right: calc(-1 * var(--messages-list-width));
+}
+
+.messages-enter-active {
+    right: 0;
+}
+
+.messages-enter-done {
+    right: 0;
+}
+
+.messages-exit-active {
+    right: calc(-1 * var(--messages-list-width));
+}
+
+/**/
+.item {
+    opacity: 1;
+    transition: opacity 500ms;
+    transform: translateX(0%);
+}
+
+.item-exit-active {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all var(--animation-messages-item-duration) ease-in;
+}
+
+/**/
+.item-enter {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.item-enter-active {
+    opacity: 1;
+    transform: translateX(0%);
+    transition: all var(--animation-messages-item-duration) ease-in;
+}

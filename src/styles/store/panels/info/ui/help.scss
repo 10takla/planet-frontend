@@ -1,0 +1,25 @@
+.store-panels-info-help {
+  row-gap: 0.5em;
+  padding: 0.7em;
+  border-radius: 1em;
+  background: rgba(94, 144, 229, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  li {
+    font-size: 0.8em;
+    padding: 0.8em;
+    border-radius: 0.5em;
+    column-gap: 0.3em;
+    background: rgba(194, 223, 241, 0.69);
+    border: 0.3em solid #2a82a2;
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 1.7em;
+    }
+  }
+}
