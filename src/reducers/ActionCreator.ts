@@ -2,8 +2,8 @@ import {AppDispatch} from "./store";
 import {requestURL} from "../helpers/requestApi";
 import {AuthDataType, AuthType, IRequest} from "../types/user/authTypes";
 import {userDataSlice} from "./slices/UserDataSlice";
-import {IPlanet, IPlot} from "../types/store/threejs/planetObjectsTypes";
 import {getCookie} from "../helpers/cookieApi";
+import {AllowModels, IFetch} from "../types/fetch/fetchTypes";
 
 export const fetchAuthUser = (dispatch: AppDispatch, typeOperation: AuthType, data: { [key in AuthDataType]?: string }, request: IRequest) => {
     return new Promise((resolve, rejects) =>
@@ -56,27 +56,63 @@ export const fetchMediaData = (dispatch?: AppDispatch) => {
     })
 }
 
-export const fetchPlanetsData = (endpoint: string, token?: boolean, body?: [string, any][]) => {
-    const getBody = body?.map(([key, value]) => {
-        const v = Array.isArray(value) ? value.join(',') : value
-        return `${key}=${v}`
-    }).join('&')
+export const fetchPlanetsData = <R, M extends AllowModels>({endpoint, isToken = false, body}: IFetch<M>) => {
+    const getBody = body && Object.entries(body).map(([key, value]) =>
+        key + '=' + (Array.isArray(value) ? value.join(',') : value)
+    ).join('&')
 
-    return new Promise<IPlot & IPlot[] & IPlanet & IPlanet[]>((resolve, reject) => {
+    const headers: HeadersInit = isToken ? {
+        "Authorization": `Token ${getCookie('token')}`,
+    } : {}
+
+    return new Promise<R>((resolve, reject) => {
         fetch(
-            requestURL(`${token ? 'user/me/' : ''}${endpoint}?${getBody}`), {
+            requestURL(endpoint + (getBody ? `?${getBody}` : '')), {
                 headers: {
+                    ...headers,
                     'Content-type': 'application/json',
-                    // "Authorization": `Token ${token ? getCookie('token') : null}`,
                 },
                 method: "GET",
             }
         )
-            .then(response => response.json())
-            .then(data => resolve(data))
-            .catch(error => console.log(error))
+            .then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } else throw response;
+                }
+            )
+            .then((data: R) => {
+                    resolve(data)
+                }
+            )
+            .catch(error => reject(error))
     })
 }
 
 
+export const fetchUpdate = <T>(plotId: any, body: any) => {
+    return new Promise<T>((resolve, reject) => {
+        fetch(requestURL(`planets/plots/${plotId}/update/`), {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Token ${getCookie('token')}`,
+            },
+            body: JSON.stringify(body)
+        })
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data: T) => {
+                resolve(data)
+            })
+            .catch(error => {
+                reject(error)
+            });
+    })
+}
 

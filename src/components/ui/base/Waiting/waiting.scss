@@ -1,0 +1,27 @@
+.waiting {
+  font-size: 1em;
+  display: none;
+
+  &.active {
+    display: block;
+  }
+
+  > div {
+    @keyframes rotation {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    background: rgba(173, 255, 47, 0.7);
+    aspect-ratio: 1/1;
+    width: 2em;
+    border: 0.3em #000000 dashed;
+    border-radius: 50%;
+    animation: rotation 1000ms infinite linear;
+    box-sizing: border-box;
+  }
+
+
+
+}

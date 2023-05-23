@@ -1,0 +1,121 @@
+.modal-content-users {
+  background: white;
+  width: 100%;
+  display: flex;
+
+  > .plots {
+    max-height: 30em;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    > h3 {
+      align-self: center;
+    }
+
+    > .list-block {
+      > .list {
+        font-size: 1em;
+
+        > .item {
+          border-radius: 0.5em;
+          padding: 0.8em;
+          background: rgba(140, 84, 84, 0.56);
+          display: flex;
+          justify-content: space-between;
+
+          > .info {
+            font-size: 1em;
+            width: 100%;
+            row-gap: 0.5em;
+            display: flex;
+            flex-direction: column;
+          }
+
+          > .actions {
+            font-size: 0.9em;
+            row-gap: 0.5em;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+
+            > .basket {
+
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > .profile {
+    padding: 0.8em;
+    row-gap: 0.5em;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
+    > .top-side {
+      padding: 0.5em;
+      border: 0.1em solid black;
+      column-gap: 0.5em;
+      justify-content: space-between;
+      display: flex;
+
+      > .info {
+        row-gap: 0.8em;
+        display: flex;
+        flex-direction: column;
+
+        > label {
+
+        }
+
+      }
+
+      > .face {
+        font-size: 1.5em;
+        row-gap: 0.1em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-self: flex-end;
+
+        > .avatar {
+          border-radius: 0.8em;
+          padding: 0.4em;
+
+          > img {
+            width: 2em;
+          }
+        }
+      }
+    }
+
+    > label {
+      column-gap: 0.5em;
+      display: flex;
+
+      &.status {
+        > span {
+
+        }
+      }
+
+      &.contact {
+        display: flex;
+        align-items: center;
+
+        > a {
+
+        }
+
+        > img {
+          width: 1.7em;
+        }
+      }
+    }
+
+  }
+}

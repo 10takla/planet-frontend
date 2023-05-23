@@ -1,0 +1,15 @@
+.list-block {
+  row-gap: 0.5em;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+
+  > input.search {
+    padding: 0.5em;
+    align-self: flex-end;
+  }
+
+  > .list {
+    row-gap: 0.8em;
+  }
+}

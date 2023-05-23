@@ -3,26 +3,61 @@
 @import "head/head";
 
 .App {
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+
+  > .head-back {
+    > .head {
+      height: 3em;
+    }
+  }
+
+  > .store {
+    height: calc(100vh - 3em);
+  }
+
+  &.fullscreen {
+    > .head-back {
+      > .head {
+        display: none;
+        height: 0;
+      }
+    }
+
+    > .store {
+      height: 100vh;
+    }
+  }
+
   .head-back {
     .head {
       z-index: 100;
     }
 
     .user-menu {
-      z-index: 98;
+      z-index: 99;
     }
 
     .form.sign, .form.registration {
-      z-index: 98;
+      z-index: 99;
     }
 
     .modal-back {
-      z-index: 99;
+      z-index: 98;
     }
   }
 
   .all-messages {
-    z-index: 97;
+    .logs {
+      z-index: 97;
+    }
+
+    .notices {
+      z-index: 97;
+    }
   }
 
   .store {

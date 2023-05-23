@@ -1,16 +1,246 @@
 .modal-content-plots {
-  display: flex;
-  flex-direction: column;
   row-gap: 1em;
   width: 100%;
   font-size: 1.2em;
   max-height: 20em;
-  overflow-y: scroll;
-}
-
-.modal-content-plots > li {
-  list-style: none;
   display: flex;
-  justify-content: space-between;
-  padding: 1.2em;
+  flex-direction: column;
+  position: relative;
+
+  > .list-block {
+    > .waiting {
+      width: 2em;
+      bottom: 0;
+      align-self: center;
+      position: absolute;
+    }
+
+    > .list {
+      font-size: 0.8em;
+      row-gap: 1em;
+
+      > .item {
+        $height: 6em;
+        column-gap: 0.5em;
+        border-radius: 0.8em;
+        padding: 0.6em;
+        background: rgba(75, 224, 219, 0.53);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        > .content {
+          border: 0.1em solid black;
+          padding: 0.5em;
+          //height: $height;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          box-sizing: border-box;
+
+          > .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            > h3 {
+              margin: 0;
+              font-size: 0.9em;
+              float: left;
+            }
+
+            > .buying {
+              font-size: 0.8em;
+              position: relative;
+
+              > label {
+
+                > span {
+                  background: rgba(132, 213, 185, 0.44);
+                  padding: 0.5em;
+                  border-radius: 0.5em;
+
+                  &:hover {
+                    background: rgba(132, 213, 185, 0.87);
+                  }
+                }
+              }
+
+              &:hover > .list {
+                display: flex;
+              }
+
+              .list {
+                max-height: 23em;
+                font-size: 0.7em;
+                z-index: 100;
+                padding: 1.2em;
+                row-gap: 1.3em;
+                background: rgba(255, 255, 255, 0.68);
+                position: absolute;
+                display: none;
+                flex-direction: column;
+                overflow-y: scroll;
+
+                > .item {
+                  border-radius: 0.8em;
+                  width: 20em;
+                  padding: 1.2em;
+                  background: rgb(250, 145, 145);
+                  row-gap: 0.8em;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  position: relative;
+
+                  > .view {
+                    column-gap: 0.9em;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    > .direction {
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+
+                      > img {
+                        width: 4em;
+                      }
+                    }
+
+                    .user-block {
+                      border-radius: 0.8em;
+                      padding: 0.2em;
+                      background: rgba(173, 255, 47, 0.49);
+                      height: 3.7em;
+                      aspect-ratio: 1/1;
+
+                      > .user {
+                        > img {
+                          width: 100%;
+                          height: 100%;
+                        }
+                      }
+                    }
+                  }
+
+                  .date {
+                    white-space: nowrap;
+                  }
+
+                  > .info {
+                    font-size: 1.2em;
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+
+                    > label {
+                      column-gap: 0.2em;
+                      display: flex;
+                      white-space: nowrap;
+                      align-self: flex-end;
+
+                      > .currency {
+                        > img {
+                          width: 1em;
+                        }
+                      }
+                    }
+
+                  }
+
+                }
+              }
+            }
+          }
+
+          > .cost-info {
+            row-gap: 1em;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            > .cost {
+              font-size: 1em;
+              row-gap: 0.2em;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+
+              > label {
+                column-gap: 0.5em;
+                display: flex;
+                align-items: flex-end;
+
+                > .currency {
+
+                  > img {
+                    height: 0.8em;
+                  }
+                }
+
+                > .waiting {
+                  height: 2em;
+                }
+
+                input {
+                  text-align: right;
+                  width: 7em;
+                }
+              }
+
+              & * {
+                font-size: inherit;
+              }
+            }
+
+            > .sale-state {
+              width: 80%;
+              column-gap: 0.5em;
+              font-size: 0.8em;
+              display: flex;
+              align-items: center;
+              text-align: right;
+              justify-content: flex-end;
+
+              > .indicator {
+                height: 1.8em;
+                aspect-ratio: 1/1;
+                background: red;
+                border-radius: 50%;
+
+                &:hover {
+                  transform: scale(1.1);
+                }
+
+                &.active {
+                  background: green;
+                }
+
+                > .waiting {
+                  width: 100%;
+                  height: 100%;
+                }
+
+              }
+            }
+
+            .waiting {
+
+            }
+          }
+        }
+
+        .scene {
+          max-height: $height;
+          min-height: $height;
+          max-width: $height;
+          min-width: $height;
+          background: red;
+        }
+      }
+    }
+  }
 }

@@ -1,0 +1,24 @@
+:root {
+  --animation-duration-modal: 400ms;
+}
+
+.modal-animation-enter {
+  top: -100%;
+}
+
+.modal-animation-enter-active {
+  top: 100px;
+  transition: top var(--animation-duration-modal);
+}
+.modal-animation-enter-done{
+  top: 100px
+}
+
+.modal-animation-exit {
+  top: 100px;
+}
+
+.modal-animation-exit-active {
+  top: 100%;
+  transition: top var(--animation-duration-modal);
+}

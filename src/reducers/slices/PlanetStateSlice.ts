@@ -1,12 +1,21 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IPlanet, IPlot} from "../../types/store/threejs/planetObjectsTypes";
-import {data} from "jquery";
+
+export interface ICameraFocus {
+    center?: [number, number, number],
+    factorRange: number
+}
+
 
 interface IPlanetState {
     planets: IPlanet[]
     plots: IPlot[]
     activePlanet: IPlanet | null
     activePlot: IPlot | null
+    cameraFocus: ICameraFocus
+    activePlanetId: IPlanet["id"] | null
+    activePlotId: IPlot["id"] | null
+    focusPlotId: IPlot['id'] | null
 }
 
 const initialState: IPlanetState = {
@@ -14,13 +23,25 @@ const initialState: IPlanetState = {
     plots: [],
     activePlanet: null,
     activePlot: null,
-
+    cameraFocus: {factorRange: 1},
+    activePlanetId: null,
+    activePlotId: null,
+    focusPlotId: null,
 }
 
 export const planetStateSlice = createSlice({
     name: 'planetSettings',
     initialState,
     reducers: {
+        setActivePlanetId(state, action: PayloadAction<IPlanet['id']>){
+            state.activePlanetId = action.payload
+        },
+        setActivePlotId(state, action: PayloadAction<IPlot['id']>){
+            state.activePlotId = action.payload
+        },
+        setFocusPlotId(state, action: PayloadAction<IPlot['id']>){
+            state.focusPlotId = action.payload
+        },
         setPlanets(state, action: PayloadAction<IPlanet[] | IPlanet>) {
             if (Array.isArray(action.payload)) {
                 state.planets = [...state.planets, ...action.payload];
@@ -52,6 +73,9 @@ export const planetStateSlice = createSlice({
         },
         setActivePlot(state, action: PayloadAction<IPlot>) {
             state.activePlot = {...state.activePlot, ...action.payload};
+        },
+        setCameraFocus(state, action: PayloadAction<IPlanetState["cameraFocus"]>) {
+            state.cameraFocus = {...state.cameraFocus, ...action.payload}
         },
     }
 })

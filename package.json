@@ -19,6 +19,7 @@
     "@types/react-redux": "^7.1.25",
     "@types/react-transition-group": "^4.4.5",
     "@types/three": "^0.150.1",
+    "@types/web3": "^1.2.2",
     "color-convert": "^2.0.1",
     "delaunator": "^5.0.0",
     "gsap": "^3.11.5",
@@ -32,8 +33,8 @@
     "react-transition-group": "^4.4.5",
     "sass": "^1.62.1",
     "three": "^0.151.3",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "web3": "^1.10.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,7 +42,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build && npm run push",
+    "push": "git push origin main"
   },
   "eslintConfig": {
     "extends": [
@@ -63,8 +65,12 @@
   },
   "devDependencies": {
     "@types/jqueryui": "^1.12.16",
+    "css-loader": "^6.7.4",
+    "css-modules-typescript-loader": "^4.0.1",
     "gh-pages": "^5.0.0",
+    "sass-loader": "^13.3.0",
+    "style-loader": "^3.3.3",
     "ts-loader": "^9.4.2",
-    "webpack-dev-server": "^4.13.3"
+    "typescript": "^4.5.5"
   }
 }

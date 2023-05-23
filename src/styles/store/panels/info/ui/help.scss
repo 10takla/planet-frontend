@@ -17,9 +17,29 @@
     list-style-type: none;
     display: flex;
     align-items: center;
+    overflow: scroll;
 
     img {
       width: 1.7em;
     }
+
+    &.planet-color {
+      > .block-color {
+        padding: 0.4em;
+        width: 4em;
+        aspect-ratio: 1/1;
+        box-sizing: border-box;
+
+        > .color {
+          width: 100%;
+          aspect-ratio: 1/1;
+        }
+      }
+
+      > span {
+      }
+    }
   }
+
+
 }

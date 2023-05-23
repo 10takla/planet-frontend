@@ -1,5 +1,6 @@
 export interface IMessage {
-    id: number
-    text: string
-    lifetime: number | null
+    id?: number
+    text: string | JSX.Element
+    lifetime?: number | null
+    isNotice: boolean
 }

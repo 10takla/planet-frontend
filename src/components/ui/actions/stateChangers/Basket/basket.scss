@@ -1,0 +1,21 @@
+.basket {
+  font-size: 1em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > img {
+    width: 4em;
+    border-radius: 0.5em;
+
+    &.active {
+      background: rgba(246, 203, 163, 0.89);
+    }
+  }
+
+  .waiting {
+    font-size: 0.5em;
+    position: absolute;
+  }
+}

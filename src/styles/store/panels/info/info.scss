@@ -3,12 +3,13 @@
 @import "ui/plots";
 
 .store-panels-info {
-    width: 15em;
+    max-width: 15em;
     pointer-events: auto;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     user-select: text;
+    overflow: hidden;
 }
 
 

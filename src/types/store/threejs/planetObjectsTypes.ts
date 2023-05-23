@@ -1,16 +1,8 @@
-import {
-    MeshBasicMaterial,
-    MeshBasicMaterialParameters,
-    MeshPhongMaterialParameters,
-    MeshStandardMaterialParameters,
-    Texture
-} from 'three';
+import {MeshPhongMaterialParameters, MeshStandardMaterialParameters, Texture} from 'three';
 import {HexColorString} from "three/src/utils";
-import {IUser} from "../../user/userTypes";
-import * as THREE from "three"
-import {Simulate} from "react-dom/test-utils";
-import keyPress = Simulate.keyPress;
-import {IRef} from "./sceneTypes";
+import {IFirstViewUser, IUser} from "../../user/userTypes";
+import {IPlotProperties, IRef} from "./sceneTypes";
+import {RequiredFields} from "../../functionsTS";
 
 export type TextureType = 'atmosphere' | "surface"
 export type ResolutionType = "2K" | "4K"
@@ -19,6 +11,20 @@ export type ITexture = {
     [key in TextureType]: {
         [key in ResolutionType]: { [key in keyof MeshStandardMaterialParameters]: Texture["image"] }
     }
+}
+
+export interface IBasket{
+    id: number
+    plot: number
+    user: IUser
+}
+
+export interface IBuying {
+    id: number
+    cost: number
+    date: string
+    owner: IFirstViewUser
+    buyer: IFirstViewUser
 }
 
 export interface IPlanet {
@@ -38,23 +44,33 @@ export interface IPlanet {
     location_information?: string
     additional_features?: string
     textures?: ITexture
-    plots?: IPlot[]
+    plots?: IPlotForStore[]
     color?: HexColorString
     description?: string
 }
+
+
 
 export interface IPlot {
     id: number
     name: string
     area?: number
     price?: number
+    markUp?: number
+    cost?: number
+    isSale?: boolean
     location?: string
     description?: string
     available_for_sale?: boolean
     mesh?: { center: [number, number, number], faces: number[], vertices: [number, number, number][] }
     color?: HexColorString
-    user: IUser & IUser["id"] | null
+    user: IFirstViewUser | null
+    planet: IPlanet
+    buying?: IBuying[]
+    basket?: IBasket
 }
+
+export interface IPlotForStore extends RequiredFields<IPlot, 'mesh' | 'area' | 'user'>{}
 
 export type PlanetSliceType = TextureType | "grid"
 
@@ -80,5 +96,6 @@ export interface IPlanetProperties {
             resolution: ResolutionType
         }
     }
+    plotsProperties?: IPlotProperties
     slices: { [key in PlanetSliceType]?: ISlice & IRef }
 }

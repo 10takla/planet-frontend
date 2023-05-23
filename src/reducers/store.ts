@@ -4,6 +4,7 @@ import {userDataReducer} from "./slices/UserDataSlice";
 import {storeStateReducer} from "./slices/StoreStateSlice";
 import {planetStateReducer} from "./slices/PlanetStateSlice";
 import {messageStateReducer} from "./slices/MessagesStateSlice";
+import {storePlanetSceneReducer, storePlanetSceneSlice,} from "./slices/sceneSlices/StorePlanetSceneSlice";
 
 
 const rootReducer = combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     storeStateReducer,
     planetStateReducer,
     messageStateReducer,
+    storePlanetSceneReducer,
 })
 
 export const setupStore = () => {

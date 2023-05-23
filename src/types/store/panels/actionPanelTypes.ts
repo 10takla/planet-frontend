@@ -1,11 +1,10 @@
-export type ActionButtonType = 'help' | 'fullscreen' | 'grid' | 'shadow' | 'cloud'
-    | 'userSearch' | 'plots' | 'userGrid' | 'plotGrid' | "dashboard" | 'plotBadge'
+export type ActionButtonType = 'help' | 'fullscreen' | 'grid' | 'shadow' | 'cloud' | 'myPlot'
+    | 'userSearch' | 'plots' | 'userGrid' | 'plotGrid' | "dashboard" | 'plotBadge' | 'badge' | 'dashboardUser'
 export type ActionRangeType = 'planetRotation' | 'cameraRotation' | 'sound'
 
 export type ActionSelectorType = {
     resolution: '2K' | '4K',
 }
-
 
 export interface IActionPanel {
     buttons: { [key in ActionButtonType]: boolean }
@@ -33,6 +32,7 @@ export type RetrieveActionKeys<T> = T extends "buttons" ? keyof IActionPanel["bu
 
 export type ChangeActionType =
     keyof IActionPanel['buttons']
+    | Partial<IActionPanel['buttons']>
     | Partial<IActionPanel['ranges']>
     | Partial<IActionPanel['selectors']>
 

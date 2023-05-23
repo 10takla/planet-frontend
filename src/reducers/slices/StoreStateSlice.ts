@@ -12,6 +12,7 @@ interface IAppState {
         isStopCameraAnimation: boolean
         isRepeatCameraAnimation: boolean
         isActiveCameraAnimation: boolean
+        plotClick: {isClamped: boolean, distance: number}
     }
 }
 
@@ -23,7 +24,8 @@ const initialState: IAppState = {
         hoverScene: true,
         isStopCameraAnimation: false,
         isRepeatCameraAnimation: false,
-        isActiveCameraAnimation: false
+        isActiveCameraAnimation: false,
+        plotClick: {isClamped: false, distance: 0}
     },
     actionPanel: {
         buttons: {
@@ -37,7 +39,10 @@ const initialState: IAppState = {
             userGrid: false,
             plotGrid: true,
             plotBadge: false,
-            dashboard: false
+            dashboard: true,
+            dashboardUser: true,
+            badge: false,
+            myPlot: true,
         },
         ranges: {
             planetRotation: 0, cameraRotation: 0,
@@ -53,7 +58,7 @@ export const storeStateSlice = createSlice({
     name: 'storeSettings',
     initialState,
     reducers: {
-        setEvent(state, action: PayloadAction<{ [key in keyof IAppState["events"]]?: boolean }>) {
+        setEvent(state, action: PayloadAction<{ [key in keyof IAppState["events"]]?: IAppState["events"][key] }>) {
             state.events = {...state.events, ...action.payload}
         },
         setActivePlanetId(state, action: PayloadAction<IPlanet['id'] | null>) {
@@ -70,6 +75,9 @@ export const storeStateSlice = createSlice({
                 }
                 if (typeof Object.values(action.payload)[0] === "string") {
                     state.actionPanel.selectors = {...state.actionPanel.selectors, ...action.payload}
+                }
+                if (typeof Object.values(action.payload)[0] === "boolean") {
+                    state.actionPanel.buttons = {...state.actionPanel.buttons, ...action.payload}
                 }
             } else {
                 state.actionPanel.buttons[action.payload] = !state.actionPanel.buttons[action.payload]

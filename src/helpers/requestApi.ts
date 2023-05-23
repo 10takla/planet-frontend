@@ -1,8 +1,6 @@
-const SERVER_HOSTS = {
-    django: 'http://localhost:8000'
-}
+import {SERVER_HOSTS} from "../config";
 
 
-export const requestURL = (endpoint: string, server: keyof typeof SERVER_HOSTS = 'django') => {
-    return [SERVER_HOSTS[server], endpoint].join('/')
+export const requestURL = (endpoint: string) => {
+    return [SERVER_HOSTS, endpoint].join('/')
 }

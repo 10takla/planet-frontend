@@ -1,12 +1,10 @@
-import {ColorRepresentation, HexColorString} from "three/src/utils";
+import {HexColorString} from "three/src/utils";
 import * as THREE from "three";
-import {IPlot} from "../../types/store/threejs/planetObjectsTypes";
-import Delaunator from 'delaunator';
-import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
+import {BufferGeometry} from "three";
+import {IPlot, IPlotForStore} from "../../types/store/threejs/planetObjectsTypes";
 import {CSSProperties} from "react";
 
-
-export function getAnyColor(hexColor: HexColorString, angleOffset = 30,
+export function getAnyColor(hexColor: CSSProperties["color"], angleOffset = 0,
                             saturation?: number, alpha?: number): CSSProperties["color"] {
     const convert = require('color-convert');
     const hsv = convert.hex.hsv(hexColor);
@@ -39,7 +37,8 @@ export function getContrastColor(hexColor: HexColorString): HexColorString {
 
 export function changeSphericalScale(buffer: THREE.BufferGeometry, scale: number, center: any) {
     //меняем размер
-    const [x, y, z] = center;
+    buffer.computeBoundingBox()
+    const {x, y, z}= buffer.boundingBox!.getCenter(new THREE.Vector3());
     buffer.computeBoundingSphere()
     const matrix = new THREE.Matrix4().makeTranslation(-x, -y, -z)
         .premultiply(new THREE.Matrix4().makeScale(scale, scale, scale))
@@ -57,35 +56,39 @@ export function changeSphericalScale(buffer: THREE.BufferGeometry, scale: number
     return buffer
 }
 
-export function geometryToBuffer(geometry: IPlot["mesh"], scale = 1) {
-    const buffer = new THREE.BufferGeometry();
-    const vertices = geometry!.vertices
-    const faces = geometry!.faces.flat()
-    const center = geometry!.center
+export function geometryToBuffer(geometry: IPlotForStore["mesh"], scale = 1, numRandomVertices = 0) {
+    let buffer = new THREE.BufferGeometry();
+    const vertices = geometry.vertices;
+    const faces = geometry.faces;
+    const center = geometry.center;
 
     buffer.setAttribute('position', new THREE.Float32BufferAttribute(vertices.flat(), 3));
-    buffer.setIndex(geometry!.vertices.map((_, i) => i));
-    buffer.translate(center![0], center![1], center![2]);
+    buffer.setIndex(faces.flat());
 
-    let polyShape = new THREE.Shape(geometry!.vertices.map((coord) => new THREE.Vector2(coord[1], coord[2])))
-    const polyGeometry = new THREE.ShapeGeometry(polyShape);
+    buffer = changeSphericalScale(buffer, scale, center)
 
-    polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(geometry!.vertices.map(coord => [coord[0], coord[1], coord[2]]).flat(), 3))
-
-    polyGeometry.computeBoundingBox()
-    const cen = polyGeometry.boundingBox!.getCenter(new THREE.Vector3())
-
-    polyGeometry.lookAt(new THREE.Vector3(cen.x, 1, cen.z))
-
-    const delaunay = new Delaunator(vertices.map(o => [o[0], o[1]]).flat());
-    const tmp = vertices.map((o, i) =>
-        [delaunay.coords[i * 2], delaunay.coords[i * 2 + 1], o[2]]
-    )
-
-
-    polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(tmp.flat(), 3))
-    const geo = new ConvexGeometry(geometry!.vertices.map(v => new THREE.Vector3(...v)))
-
-    return changeSphericalScale(polyGeometry, scale, center)
+    return buffer;
 }
 
+function generateRandomVertices(buffer: BufferGeometry, geometry: IPlot["mesh"]) {
+    const vertices = geometry!.vertices.map(o => ({x: o[0], y: o[1], z: o[2]}))
+    const c = geometry!.center
+    const center = {x: c[0], y: c[1], z: c[2]}
+
+    // Генерируем случайные точки внутри ограничивающего параллелепипеда
+    const randomVertices = []
+    for (let i = 0; i < vertices.length; i++) {
+        const rangeX = Math.abs(center.x - vertices[i].x)
+        const rangeY = Math.abs(center.y - vertices[i].y)
+        const rangeZ = Math.abs(center.z - vertices[i].z)
+        const randomVertex = new THREE.Vector3(
+            center.x + (Math.random() - 0.5) * rangeX,
+            center.y + (Math.random() - 0.5) * rangeY,
+            center.z + (Math.random() - 0.5) * rangeZ
+        );
+        randomVertices.push(randomVertex)
+    }
+
+
+    return [...vertices, ...randomVertices.map(v=> v.normalize())].map(v => [v.x, v.y, v.z])
+}

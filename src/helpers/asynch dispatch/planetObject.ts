@@ -18,7 +18,7 @@ export function checkSoreFields(fields: string[], storage: any[], activeId: numb
 
 export const getPlanetData = (dispatch: AppDispatch, fields: string[], storage: IPlanet[], activeId: number) => {
     const [index, fieldsCheck] = checkSoreFields(fields, storage, activeId)
-    console.log(index, fieldsCheck)
+
     if (!fieldsCheck.length && typeof index === "number") {
         // dispatch(planetStateSlice.actions.setActivePlanet(storage[index]))
     } else {
