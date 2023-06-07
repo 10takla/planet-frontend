@@ -1,5 +1,5 @@
-import {IPlanet} from "../../types/store/threejs/planetObjectsTypes";
 import {AppDispatch} from "../../reducers/store";
+import {IPlanet} from "../../types/entities/planetType";
 
 export function checkSoreFields(fields: string[], storage: any[], activeId: number): [number | null, string[]] {
     const index = storage.findIndex(item => item.id === activeId)

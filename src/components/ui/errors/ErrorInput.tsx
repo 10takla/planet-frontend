@@ -31,19 +31,25 @@ const ErrorInput: FC<IErrorInput> = ({
     // Отслеживание валидации
     useEffect(() => {
         if (fieldForValidate === input.property.name) {
-            setErrors(input.validate!(formRef.current!.elements))
+            setErrors(input.validate!(formRef.current!.elements , input.property.name))
             setFieldForValidate!(null)
         }
     }, [fieldForValidate]);
-
-    const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-        input.validate && formRef.current && setErrors(input.validate(formRef.current.elements))
+    const [value, setValue] = useState(input.value);
+    const handleInput = (e: any) => {
+        input.validate && formRef.current && setErrors(input.validate(formRef.current.elements, input.property.name))
         input.fieldsToTrackValidate && input.fieldsToTrackValidate.map(field => setFieldForValidate!(field))
+        //@ts-ignore
+        setValue(e.target.value)
     }
 
     return <div className='input'>
         {warning && <img className='warning' src={ASSETS_URL + "/images/warning.svg"} alt=""/>}
-        <input onInput={handleInput} {...input.property}/>
+        {input.isTextArea ?
+            <textarea value={value} onInput={handleInput} {...input.property}></textarea>
+            :
+            <input value={value} onInput={handleInput} {...input.property}/>
+        }
         <Transition in={!!errors.length} timeout={200} mountOnEnter unmountOnExit
                     onEnter={(e: EventTarget) => $(e).hide().slideDown(300)}
                     onExit={e => $(e).show().slideUp(300)}>

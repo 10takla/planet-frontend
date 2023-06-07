@@ -7,9 +7,10 @@
   row-gap: 1em;
   padding: 1.2em;
   border-radius: 0 0 0 1.7em;
-  background: rgb(155, 145, 145);
+  background: rgb(182, 180, 180);
 
   > li {
+    background: white;
     user-select: none;
     cursor: pointer;
     list-style-type: none;

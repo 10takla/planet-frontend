@@ -1,0 +1,26 @@
+.buying {
+
+
+  > button {
+    background: #d5ecd3;
+    padding: 0.8em;
+    font-size: 2em;
+    border-radius: 0.4em;
+    border: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &:hover {
+      transition: transform 500ms;
+      background: rgba(213, 236, 211, 0.61);
+    }
+
+    > .waiting{
+
+      position: absolute;
+    }
+
+  }
+}

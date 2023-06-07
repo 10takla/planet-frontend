@@ -2,14 +2,13 @@ import React, {CSSProperties, FC, MouseEvent, useCallback, useState, WheelEvent}
 import Camera from "../../store/threejs/camera/Camera";
 import OrbitControl from "../../store/threejs/components/OrbitControl";
 import Environment from "../../store/threejs/components/Environment";
-import {IPlanet} from "../../../types/store/threejs/planetObjectsTypes";
 import Planet from "../../store/threejs/Planet/Planet";
 import {Canvas} from "@react-three/fiber";
-import {ISceneProperties} from "../../../types/store/threejs/sceneTypes";
-import {storeStateSlice} from "../../../reducers/slices/StoreStateSlice";
 import {useAppDispatch, useAppSelector} from "../../../hooks/redux";
 import CombinePlots from "../../store/threejs/Plots/CombinePlots";
-import {ICameraFocus} from "../../../reducers/slices/PlanetStateSlice";
+import {IPlanet} from "../../../types/entities/planetType";
+import {planetSceneSlice, SlicePlanetSceneType,} from "../../../reducers/slices/scene/planetSceneSlice";
+import {Stats} from "@react-three/drei";
 
 enum Fields {
     ENV = 'environment',
@@ -17,65 +16,74 @@ enum Fields {
     OrbControl = 'orbitControl'
 }
 
-interface IPlanetScene extends ISceneProperties {
+interface IPlanetScene {
     fields?: Fields[]
     planet: IPlanet
     style?: CSSProperties
-    cameraFocus?: ICameraFocus
+    slice: SlicePlanetSceneType
 }
 
-const PlanetScene: FC<IPlanetScene> = ({fields, cameraFocus, planet, ...props}) => {
+const PlanetScene: FC<IPlanetScene> = ({slice, planet, style}) => {
     const dispatch = useAppDispatch()
+
+    const {plotClick, isActiveCameraAnimation} = useAppSelector(state => state.planetSceneReducer[slice].events)
+    const {scene, actions} = useAppSelector(state => state.planetSceneReducer[slice])
     const [mouseKey, setMouseKey] = useState<number | null>(null);
     const [curr, setCurr] = useState({x: 0, y: 0});
-    const {plotClick, isActiveCameraAnimation} = useAppSelector(state => state.storeStateReducer.events)
 
     const onCanvasWheel = useCallback((event: WheelEvent<HTMLDivElement>) => {
-        if (props.camera.enableAnimation && isActiveCameraAnimation) {
-            dispatch(storeStateSlice.actions.setEvent({"isStopCameraAnimation": true}))
+        if (scene.camera.enableAnimation && isActiveCameraAnimation) {
+            dispatch(planetSceneSlice.actions.setEvent({slice: slice, data: {"isStopCameraAnimation": true}}))
         }
     }, [isActiveCameraAnimation]);
 
     const handleMouseDown = useCallback((event: MouseEvent<HTMLDivElement>) => {
-        if (props.camera.enableAnimation && isActiveCameraAnimation) {
-            dispatch(storeStateSlice.actions.setEvent({"isStopCameraAnimation": true}))
+        if (scene.camera.enableAnimation && isActiveCameraAnimation) {
+            dispatch(planetSceneSlice.actions.setEvent({slice: slice, data: {"isStopCameraAnimation": true}}))
         }
         setMouseKey(event.button)
-        if (props.planetProperties.plotsProperties) {
+        if (scene.plots) {
             plotClick.isClamped && setCurr({x: event.clientX, y: event.clientY})
         }
     }, [curr, isActiveCameraAnimation])
 
     const handleMouseMove = useCallback((event: MouseEvent<HTMLDivElement>) => {
-        if (props.planetProperties.plotsProperties) {
+        if (scene.plots) {
             if (plotClick.isClamped) {
                 const [distanceX, distanceY] = [Math.abs(event.clientX - curr.x), Math.abs(event.clientY - curr.y)];
                 const distance = plotClick.distance + ((distanceX ** 2 + distanceY ** 2) ** 0.5)
                 setCurr({x: event.clientX, y: event.clientY})
-                dispatch(storeStateSlice.actions.setEvent({plotClick: {isClamped: true, distance: distance}}))
+                dispatch(planetSceneSlice.actions.setEvent({
+                    data: {
+                        plotClick: {
+                            isClamped: true,
+                            distance: distance
+                        }
+                    }, slice: slice
+                }))
             }
         }
     }, [curr, plotClick])
 
     return (
-        <Canvas className="scene" style={props.style}
+        <Canvas className="scene" style={style}
                 onMouseMove={handleMouseMove}
                 onMouseDown={handleMouseDown}
                 onWheel={onCanvasWheel}>
-            {props.environment && <Environment {...props.environment}/>}
-            {props.lights &&
+            {scene.environment && <Environment slice={slice}/>}
+            {scene.lights &&
                 <React.Fragment>
                     <ambientLight color={0x404040} intensity={1}/>
                     <directionalLight color={0xFFFFFF} intensity={1.2} position={[10, 0, 0]}/>
                 </React.Fragment>
             }
-            {props.orbitControl &&
-                <OrbitControl {...props.orbitControl} mouseKey={mouseKey}/>}
-            <Camera cameraFocus={cameraFocus} {...props.camera}/>
-            <Planet planet={planet} {...props.planetProperties}>
-                {planet?.plots && props.planetProperties.plotsProperties && props.planetProperties.plotsProperties.actions.buttons.isPlots &&
-                    <CombinePlots planet={planet} plots={planet.plots} {...props.planetProperties.plotsProperties}/>}
-            </Planet>
+            {scene.orbitControl &&
+                <OrbitControl slice={slice} mouseKey={mouseKey}/>}
+            <Camera slice={slice}/>
+            {actions.planet.isPlanet && <Planet slice={slice} planet={planet}>
+                {planet?.plots && scene.plots && actions.plots.isPlots &&
+                    <CombinePlots slice={slice} planet={planet} plots={planet.plots}/>}
+            </Planet>}
         </Canvas>
     );
 };

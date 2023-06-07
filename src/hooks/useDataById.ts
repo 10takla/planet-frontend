@@ -1,21 +1,24 @@
-import {useAppSelector} from "./redux";
+import {useAppDispatch, useAppSelector} from "./redux";
 import {useMemo} from "react";
+import {IPlot, IPlotForStore} from "../types/entities/plotType";
+import {IStorePlanet} from "../types/entities/planetType";
+import {RequiredFields} from "../types/functionsTS";
 
-export const usePlanet = () => {
+export const usePlanet = <T = IStorePlanet>() => {
     const {activePlanetId, planets} = useAppSelector((state => state.planetStateReducer))
 
     const activePlanet = useMemo(() => {
         return planets.find(planet => planet.id === activePlanetId) ?? null
     }, [activePlanetId, planets])
 
-    return activePlanet
+    return activePlanet as T | null
 }
-export const usePlot = () => {
-    const {activePlotId, plots} = useAppSelector((state => state.planetStateReducer))
-
+export const usePlot = <T = IPlotForStore>() => {
+    const {activePlotId} = useAppSelector((state => state.planetStateReducer))
+    const planet = usePlanet()
     const activePlot = useMemo(() => {
-        return plots.find(plot => plot.id === activePlotId) ?? null
-    }, [activePlotId, plots])
+        return planet?.plots?.find(plot => plot.id === activePlotId) ?? null
+    }, [activePlotId, planet])
 
-    return activePlot
+    return activePlot as T | null;
 }

@@ -6,6 +6,7 @@ import {fetchAuthUser} from "../../../reducers/ActionCreator";
 import {forms} from "../../../configs/formAuth";
 import AnimationByCss from "../../ui/animations/AnimationByCss";
 import {userDataSlice} from "../../../reducers/slices/UserDataSlice";
+import {appStateSlice} from "../../../reducers/slices/app/AppStateSlice";
 
 const Authorization = () => {
     const activeForm = useAppSelector(state => state.appStateReducer.activeAuthForm)
@@ -13,13 +14,18 @@ const Authorization = () => {
 
     useEffect(() => {
         const token = getCookie('token')
+
         if (token) {
-            fetchAuthUser(dispatch, 'authenticate', {}, {method: "POST", token: token})
-                .then(data => {
-                    dispatch(userDataSlice.actions.setAuthState({isAuth: true, token: token}))
+            dispatch(appStateSlice.actions.setEvent({'isProcessAuth': true}))
+            fetchAuthUser('authenticate', {}, {method: "POST", token: token})
+                .then((data: any) => {
+                    dispatch(userDataSlice.actions.setAuthUser(data))
                 })
                 .catch(error => {
-                    dispatch(userDataSlice.actions.setAuthState({isAuth: false}))
+                    // dispatch(userDataSlice.actions.setAuthUser(null))
+                })
+                .finally(()=> {
+                    dispatch(appStateSlice.actions.setEvent({'isProcessAuth': false}))
                 })
         }
     }, []);

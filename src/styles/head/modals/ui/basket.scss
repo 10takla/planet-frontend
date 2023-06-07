@@ -1,0 +1,66 @@
+.modal-content-basket {
+  row-gap: 1em;
+  width: 100%;
+  font-size: 1.2em;
+  max-height: 20em;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  > .list-block {
+    > .waiting {
+      width: 2em;
+      bottom: 0;
+      align-self: center;
+      position: absolute;
+    }
+
+    > .list {
+      font-size: 0.8em;
+      row-gap: 1em;
+
+      > .item {
+        $height: 6em;
+        column-gap: 0.5em;
+        border-radius: 0.8em;
+        padding: 0.6em;
+        background: rgba(75, 224, 219, 0.53);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        > .content {
+          border: 0.1em solid black;
+          padding: 0.5em;
+          //height: $height;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          box-sizing: border-box;
+
+          > .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            > h3 {
+              margin: 0;
+              font-size: 0.9em;
+              float: left;
+            }
+
+
+          }
+
+          > .buying {
+            font-size: 0.6em;
+          }
+        }
+        > .openInStore{
+          font-size: 0.8em;
+        }
+
+      }
+    }
+  }
+}

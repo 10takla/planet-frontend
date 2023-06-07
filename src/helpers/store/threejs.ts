@@ -1,8 +1,8 @@
 import {HexColorString} from "three/src/utils";
 import * as THREE from "three";
 import {BufferGeometry} from "three";
-import {IPlot, IPlotForStore} from "../../types/store/threejs/planetObjectsTypes";
 import {CSSProperties} from "react";
+import {IPlot, IPlotForStore} from "../../types/entities/plotType";
 
 export function getAnyColor(hexColor: CSSProperties["color"], angleOffset = 0,
                             saturation?: number, alpha?: number): CSSProperties["color"] {

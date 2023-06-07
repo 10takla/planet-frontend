@@ -1,12 +1,12 @@
-import React, {FC, useCallback, useMemo} from 'react';
+import React, {FC, useCallback} from 'react';
 import {ASSETS_URL} from "../../../config";
 import HoverDescription from "../info/HoverDescription/HoverDescription";
-import {IPlot} from "../../../types/store/threejs/planetObjectsTypes";
 import {useAppDispatch} from "../../../hooks/redux";
-import {appStateSlice} from "../../../reducers/slices/AppStateSlice";
-import {planetStateSlice} from "../../../reducers/slices/PlanetStateSlice";
+import {appStateSlice} from "../../../reducers/slices/app/AppStateSlice";
+import {planetStateSlice} from "../../../reducers/slices/scene/PlanetStateSlice";
 import {RequiredFields} from "../../../types/functionsTS";
-import {storeStateSlice} from "../../../reducers/slices/StoreStateSlice";
+import {IPlot} from "../../../types/entities/plotType";
+import {planetSceneSlice} from "../../../reducers/slices/scene/planetSceneSlice";
 
 interface IOpenInStore {
     plot: RequiredFields<IPlot, | 'planet'>
@@ -15,8 +15,8 @@ interface IOpenInStore {
 const OpenInStore: FC<IOpenInStore> = ({plot}) => {
     const dispatch = useAppDispatch()
     const handleOnClick = useCallback(() => {
-        dispatch(storeStateSlice.actions.setActionPanel({'plots': true}))
-        dispatch(storeStateSlice.actions.setActionPanel({'dashboardUser': false}))
+        dispatch(planetSceneSlice.actions.setAction({data: ['plots', {'isPlots': true}], slice: 'store'}))
+        dispatch(planetSceneSlice.actions.setAction({data: ['plots', {'isDashboardUser': false}], slice: 'store'}))
 
         dispatch(appStateSlice.actions.setActiveModal(null))
         dispatch(planetStateSlice.actions.setActivePlanetId(plot.planet.id))
@@ -26,7 +26,7 @@ const OpenInStore: FC<IOpenInStore> = ({plot}) => {
     }, [plot]);
 
     return (
-        <HoverDescription onClick={handleOnClick} description={'Открыть в магазине'}>
+        <HoverDescription className={'openInStore'} onClick={handleOnClick} description={'Открыть в магазине'}>
             <img style={{width: '4em'}} src={ASSETS_URL + "/images/planet.svg"}/>
         </HoverDescription>
     );

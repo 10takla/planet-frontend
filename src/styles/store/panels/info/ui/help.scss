@@ -11,7 +11,7 @@
     font-size: 0.8em;
     padding: 0.8em;
     border-radius: 0.5em;
-    column-gap: 0.3em;
+    column-gap: 0.8em;
     background: rgba(194, 223, 241, 0.69);
     border: 0.3em solid #2a82a2;
     list-style-type: none;
@@ -24,22 +24,23 @@
     }
 
     &.planet-color {
-      > .block-color {
-        padding: 0.4em;
+      .block-color {
+        border-radius: 0.5em;
+        padding: 0.6em;
         width: 4em;
         aspect-ratio: 1/1;
         box-sizing: border-box;
 
         > .color {
+          border-radius: 1em;
           width: 100%;
           aspect-ratio: 1/1;
         }
       }
 
       > span {
+
       }
     }
   }
-
-
 }

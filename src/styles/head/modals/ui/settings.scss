@@ -32,6 +32,10 @@
       padding: 0;;
       transition: transform 500ms, padding 500ms;
     }
+
+    &.active {
+      background: red;
+    }
   }
 
   > .form.update {

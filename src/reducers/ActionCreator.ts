@@ -1,16 +1,15 @@
 import {AppDispatch} from "./store";
 import {requestURL} from "../helpers/requestApi";
 import {AuthDataType, AuthType, IRequest} from "../types/user/authTypes";
-import {userDataSlice} from "./slices/UserDataSlice";
 import {getCookie} from "../helpers/cookieApi";
-import {AllowModels, IFetch} from "../types/fetch/fetchTypes";
+import {AllowModels, FetchMethodEnum, IFetch, IFetchAnyMethod} from "../types/fetch/fetchTypes";
 
-export const fetchAuthUser = (dispatch: AppDispatch, typeOperation: AuthType, data: { [key in AuthDataType]?: string }, request: IRequest) => {
+export const fetchAuthUser = (typeOperation: AuthType, data: { [key in AuthDataType]?: string }, request: IRequest) => {
     return new Promise((resolve, rejects) =>
         fetch(requestURL(`user/${typeOperation}/`), {
             headers: {
                 'Content-type': 'application/json',
-                "Authorization": `Token ${request.token}`,
+                "Authorization": `Token ${getCookie('token')}`,
             },
             method: request.method,
             body: JSON.stringify(data)
@@ -18,33 +17,22 @@ export const fetchAuthUser = (dispatch: AppDispatch, typeOperation: AuthType, da
             .then(response => {
                 if (!response.ok) {
                     response.json().then(data => rejects(data))
+                } else {
+                    response.json().then(data => {
+                        resolve(data)
+                    })
                 }
-                response.json().then(data => {
-                    if (!data.token) {
-                        rejects({message: ['Авторизация не прошла. Попробуйте позже']})
-                    }
-                    resolve(data)
-                })
+                // response.json().then(data => {
+                //     if (!data.token) {
+                //         rejects({message: ['Авторизация не прошла. Попробуйте позже']})
+                //     }
+                //     resolve(data)
+                // })
             })
             .catch(error => {
                 rejects({message: ['Нет связи с сервером']})
             })
     )
-}
-
-export const fetchUserData = (dispatch: AppDispatch, token: string) => {
-    fetch(
-        requestURL('user/me/'), {
-            headers: {
-                'Content-type': 'application/json',
-                "Authorization": `Token ${token}`,
-            },
-            method: "GET",
-        }
-    )
-        .then(response => response.json())
-        .then(data => dispatch(userDataSlice.actions.setCurrentUser(data)))
-        .catch(error => console.log(error))
 }
 
 export const fetchMediaData = (dispatch?: AppDispatch) => {
@@ -89,30 +77,35 @@ export const fetchPlanetsData = <R, M extends AllowModels>({endpoint, isToken = 
     })
 }
 
+export const fetchCUD = <T = object>({endpoint, body, action}: IFetchAnyMethod) => {
+    const getBody = body && Object.entries(body).map(([key, value]) =>
+        key + '=' + (Array.isArray(value) ? value.join(',') : value)
+    ).join('&')
 
-export const fetchUpdate = <T>(plotId: any, body: any) => {
     return new Promise<T>((resolve, reject) => {
-        fetch(requestURL(`planets/plots/${plotId}/update/`), {
-            method: 'PATCH',
+        fetch(requestURL(`user/me/${endpoint}${action}/?` + getBody), {
+            method: FetchMethodEnum[action],
             headers: {
-                'Content-Type': 'application/json',
                 "Authorization": `Token ${getCookie('token')}`,
+                'Content-type': 'application/json'
             },
             body: JSON.stringify(body)
         })
             .then(response => {
-
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error(String(response.status));
+                }
+                if (action === 'delete'){
+                    return null
                 }
                 return response.json();
             })
-            .then((data: T) => {
+            .then((data) => {
                 resolve(data)
             })
-            .catch(error => {
-                reject(error)
-            });
+            .catch((error: Error) => {
+                reject(error.message)
+            })
     })
 }
 

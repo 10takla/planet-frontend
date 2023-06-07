@@ -1,22 +1,25 @@
-import React, {FC} from 'react';
-import {ActionType, IActionElement} from "../../../../../types/store/panels/actionPanelTypes";
+import React, {FC, HTMLProps} from 'react';
 import {useAppSelector} from "../../../../../hooks/redux";
 import {ASSETS_URL} from "../../../../../config"
+import {IModernActionElement} from "../../../../../types/store/scene/actionsTypes";
+import HoverDescription from "../../../../ui/info/HoverDescription/HoverDescription";
 
-interface IActionElementComponent {
-    action: IActionElement<ActionType>
+interface IActionElementComponent extends HTMLProps<any>{
+    actionE: IModernActionElement
     actions?: { [key in any]: boolean | number | object }
     handleOnClick: () => void
+    rootRef?: React.MutableRefObject<HTMLDivElement | null>
 }
 
-const ActionElement: FC<IActionElementComponent> = ({action, handleOnClick}) => {
-    const actions = useAppSelector(state => state.storeStateReducer.actionPanel[action.type])
+const ActionElement: FC<IActionElementComponent> = ({actionE, handleOnClick, ...props}) => {
+    const actionValue = useAppSelector(state => state.planetSceneReducer.store.actions[actionE.root][actionE.name])
 
     return (
-        // @ts-ignore
-        <img className={["action-element", 'selectable', actions[action.name] ? 'active' : ''].join(' ')}
-             onClick={handleOnClick}
-             src={ASSETS_URL + `images/actions/${action.img ?? action.name}.svg`}/>
+        <HoverDescription description={actionE.description} {...props}>
+            <img className={["action-element", 'selectable', actionValue ? 'active' : ''].join(' ')}
+                 onClick={handleOnClick}
+                 src={ASSETS_URL + `images/actions/${actionE.img}.svg`}/>
+        </HoverDescription>
     )
 }
 

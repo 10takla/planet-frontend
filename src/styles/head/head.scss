@@ -7,17 +7,20 @@
 .head-back {
   > .head {
     position: relative;
-    background: #e9a3fc;
-    padding: 10px;
+    background: linear-gradient(80deg, #b5a4c5, #c0a6e7);
+    padding: 1em 1.2em;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
 
     > .home {
-      font-size: 1.3em;
+      font-size: 1.6em;
       text-decoration: none;
       font-weight: bold;
-      color: #20638d;
+      font-family: Arial;
+      color: #50606e;
+      -webkit-text-stroke: 0.04em #0a1f2c;
     }
 
     .selectable {

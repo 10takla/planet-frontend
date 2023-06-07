@@ -1,29 +1,36 @@
 import React, {FC, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import * as THREE from "three";
-import {MeshBasicMaterialParameters, MeshStandardMaterial} from "three";
+import {MeshBasicMaterialParameters} from "three";
 import {useAppDispatch, useAppSelector} from "../../../../hooks/redux";
-import {IPlanet, IPlot, IPlotForStore} from "../../../../types/store/threejs/planetObjectsTypes";
-import {geometryToBuffer} from "../../../../helpers/store/threejs";
+import {geometryToBuffer, getAnyColor} from "../../../../helpers/store/threejs";
 import {ThreeEvent} from "@react-three/fiber";
-import {planetStateSlice} from "../../../../reducers/slices/PlanetStateSlice";
-import {IPlotProperties, PlotMaterialType} from "../../../../types/store/threejs/sceneTypes";
-import {storeStateSlice} from "../../../../reducers/slices/StoreStateSlice";
+import {planetStateSlice} from "../../../../reducers/slices/scene/PlanetStateSlice";
 import PlotHtml from "../Html/Plot/PlotHtml";
 import HtmlPlot from "../Html/HtmlPlot";
-import UserFirstView from "../../../ui/userViews/UserFirstView";
+import UserFocus from "../../../ui/userViews/UserFocus";
+import {IPlot, IPlotForStore} from "../../../../types/entities/plotType";
+import {IPlanet} from "../../../../types/entities/planetType";
+import {planetSceneSlice, SlicePlanetSceneType} from "../../../../reducers/slices/scene/planetSceneSlice";
+import {IPlotProperties} from "../../../../types/store/scene/properties/plotPropertieseTypes";
 
-interface IPlotComponent extends IPlotProperties {
+interface IPlotComponent {
     plot: IPlotForStore
     children?: React.ReactNode
     planet: IPlanet
     activePlotId: IPlot['id'] | null | undefined
+    slice: SlicePlanetSceneType
 }
 
-const Plot: FC<IPlotComponent> = ({plot, activePlotId, planet, children, ...props}) => {
+const Plot: FC<IPlotComponent> = ({plot, slice, activePlotId, planet, children}) => {
     const dispatch = useAppDispatch()
-    const {isGrid, isPlotGrid, isUserGrid, isUserPlots,isMyPlot, isDashboard, isDashboardUser} = props.actions.buttons
+    const actions = useAppSelector(state => (
+        {...state.planetSceneReducer[slice].actions.plots, ...state.planetSceneReducer[slice].actions.planet}
+    ))
+    const props = useAppSelector(state => state.planetSceneReducer[slice].scene.plots!)
+    const {plotClick} = useAppSelector(state => state.planetSceneReducer[slice].events)
+
     const plotRef = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>>(null);
-    const {currentUser, authState} = useAppSelector(state => state.userDataReducer)
+    const authUser = useAppSelector(state => state.userDataReducer.authUser)
     const [isHover, setHover] = useState<boolean>(false);
     const geometry = useMemo(() => geometryToBuffer(plot.mesh, props.scale),
         [props.scale, plot])
@@ -33,39 +40,40 @@ const Plot: FC<IPlotComponent> = ({plot, activePlotId, planet, children, ...prop
     }, [geometry]);
 
     const material = useMemo<MeshBasicMaterialParameters>(() => {
-        const keysList = Object.keys(props.materials) as PlotMaterialType[]
-        const materials = keysList.reduce((all, curr) => (
-            {
-                ...all,
-                [curr]: props.materials[curr].getMaterial(planet.color)
+        const tmpMat = Object.entries(props.materials).reduce((accum, [key, value]) => {
+            if (value.hasOwnProperty('offsetColor')) {
+                // @ts-ignore
+                value = {...value, color: getAnyColor(planet.color, value.offsetColor)}
             }
-        ), {}) as { [key in PlotMaterialType]: MeshStandardMaterial }
 
-        let mat: any = materials.default
-        if (isUserPlots && plot.user) {
-            if (isMyPlot &&  plot.user.id === currentUser?.id) {
-                mat = {...mat, ...materials.isMeOwned}
+            return {...accum, [key]: value}
+        }, {} as IPlotProperties['materials'])
+
+        let mat: any = tmpMat.default
+        if (actions.isUserPlots && plot.owner) {
+            if (actions.isMyPlot && authUser && plot.owner.id === authUser?.id) {
+                mat = {...mat, ...tmpMat.ownedByMe}
             } else {
-                mat = {...mat, ...materials.isOwned}
+                mat = {...mat, ...tmpMat.owned}
             }
+        }
+        if (actions.isNotSale && !plot.isSale) {
+            mat = {...mat, ...tmpMat.isNotSale}
         }
 
         if (isHover) {
-            mat = {...mat, ...materials.default, ...materials.isHover}
+            mat = {...mat, ...tmpMat.default, ...tmpMat.hover}
         }
 
         if (plot.id === activePlotId) {
-            mat = {...mat, ...materials.default, ...materials.isActive}
+            mat = {...mat, ...tmpMat.default, ...tmpMat.active}
         }
 
         return mat
-    }, [isHover, isUserPlots, isMyPlot, activePlotId, planet, props.materials, currentUser]);
-
-    const {plotClick} = useAppSelector(state => state.storeStateReducer.events)
-
+    }, [isHover, actions, activePlotId, planet, props?.materials, authUser]);
 
     const handleMouseDown = useCallback((event: ThreeEvent<PointerEvent>) => {
-        dispatch(storeStateSlice.actions.setEvent({plotClick: {isClamped: true, distance: 0}}))
+        dispatch(planetSceneSlice.actions.setEvent({data: {plotClick: {isClamped: true, distance: 0}}, slice: slice}))
     }, []);
 
     const handleMouseUp = useCallback((event: ThreeEvent<PointerEvent>) => {
@@ -74,7 +82,10 @@ const Plot: FC<IPlotComponent> = ({plot, activePlotId, planet, children, ...prop
                 dispatch(planetStateSlice.actions.setActivePlotId(plot.id))
                 dispatch(planetStateSlice.actions.setFocusPlotId(plot.id))
             }
-            dispatch(storeStateSlice.actions.setEvent({plotClick: {isClamped: false, distance: 0}}))
+            dispatch(planetSceneSlice.actions.setEvent({
+                data: {plotClick: {isClamped: false, distance: 0}},
+                slice: slice
+            }))
         }
     }, [plotClick]);
 
@@ -82,12 +93,15 @@ const Plot: FC<IPlotComponent> = ({plot, activePlotId, planet, children, ...prop
 
     useEffect(() => {
         if (plot.id === focusPlotId) {
-            dispatch(planetStateSlice.actions.setCameraFocus({
-                center: center,
-                factorRange: plot.area
+            dispatch(planetSceneSlice.actions.setCameraFocus({
+                data: {
+                    center: center,
+                    factorRange: plot.area
+                }, slice: slice
             }))
         }
     }, [focusPlotId]);
+
 
     return (
         <group>
@@ -98,27 +112,31 @@ const Plot: FC<IPlotComponent> = ({plot, activePlotId, planet, children, ...prop
                   onPointerUp={handleMouseUp}
             >
                 <meshBasicMaterial transparent={true} {...material}/>
-                {(!isGrid &&
+                {(!actions.isGrid &&
                         (
-                            (isPlotGrid && (!isUserPlots || isUserPlots && ((isUserGrid && plot.user) || !plot.user)))
+                            (actions.isPlotGrid && (!actions.isUserPlots || actions.isUserPlots &&
+                                ((actions.isUserGrid && plot.owner) || !plot.owner)))
                             ||
-                            (!isPlotGrid && isUserPlots && isUserGrid && plot.user)
+                            (!actions.isPlotGrid && actions.isUserPlots && actions.isUserGrid && plot.owner)
                         )
                     ) &&
                     <mesh geometry={geometry}>
                         <meshBasicMaterial wireframe={true}/>
                     </mesh>
                 }
-                {isDashboard && ((plot.user && isUserPlots) || plot.id === activePlotId) &&
+                {actions.isDashboard && ((plot.owner && actions.isUserPlots) || plot.id === activePlotId) &&
                     <React.Fragment>
                         {plot.id === activePlotId &&
-                            <HtmlPlot plot={plot} center={center} {...props}>
-                                <PlotHtml/>
+                            <HtmlPlot position={center}>
+                                <PlotHtml plot={plot}/>
                             </HtmlPlot>
                         }
-                        {plot.user && isDashboardUser && isUserPlots && plot.id !== activePlotId &&
-                            <HtmlPlot plot={plot} center={center} {...props}>
-                                <UserFirstView dispatch={dispatch} {...plot.user}/>
+                        {plot.owner
+                            && actions.isDashboardUser && actions.isUserPlots && plot.id !== activePlotId
+                            && authUser && authUser?.id !== plot.owner.id
+                            &&
+                            <HtmlPlot distanceFactor={5 * plot.area ** 0.2} position={center}>
+                                <UserFocus user={plot.owner}/>
                             </HtmlPlot>
                         }
                     </React.Fragment>

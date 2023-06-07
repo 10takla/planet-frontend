@@ -3,4 +3,5 @@ export interface IMessage {
     text: string | JSX.Element
     lifetime?: number | null
     isNotice: boolean
+    date?: string
 }

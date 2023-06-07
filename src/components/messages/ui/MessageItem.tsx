@@ -22,6 +22,7 @@ const MessageItem: FC<IMessageComponent> = ({message, clearMessages, lifetime}) 
                     clearMessages([message])
                 }
             }, 1000)
+            return () => clearInterval(interval);
         }
     }, []);
 
@@ -32,10 +33,17 @@ const MessageItem: FC<IMessageComponent> = ({message, clearMessages, lifetime}) 
 
     return (
         <li className='item'>
-            <span>{message.text}</span>
-            <div className={'right-side'}>
-                <img onClick={e => clearMessages([message])}
-                     src={ASSETS_URL + "/images/close.svg"}/>
+            <div className={'top-side'}>
+                <span className={'text'}>{message.text}</span>
+                <img
+                    onClick={() => {
+                        clearMessages([message]);
+                    }}
+                    src={ASSETS_URL + "/images/close.svg"}
+                />
+            </div>
+            <div className={'bottom-side'}>
+                <span className={'date'}>{message.date}</span>
                 <span className={'lifetime'}>{timeConvert}</span>
             </div>
         </li>

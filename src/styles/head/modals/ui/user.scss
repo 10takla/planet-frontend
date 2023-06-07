@@ -2,6 +2,8 @@
   background: white;
   width: 100%;
   display: flex;
+  padding: 0.8em;
+  box-sizing: border-box;
 
   > .plots {
     max-height: 30em;
@@ -15,30 +17,45 @@
     }
 
     > .list-block {
+
+
       > .list {
         font-size: 1em;
 
         > .item {
-          border-radius: 0.5em;
-          padding: 0.8em;
+          border-radius: 0.3em;
           background: rgba(140, 84, 84, 0.56);
           display: flex;
           justify-content: space-between;
 
+
           > .info {
+            padding: 0.8em;
             font-size: 1em;
             width: 100%;
             row-gap: 0.5em;
             display: flex;
             flex-direction: column;
+
+            > h4 {
+              margin: 0.2em 0
+            }
+            > label{
+              margin-left: 0.5em;
+            }
           }
 
           > .actions {
-            font-size: 0.9em;
-            row-gap: 0.5em;
+            padding: 0.4em;
+            background: rgba(255, 201, 201, 0.45);
+            border-radius: 0.75em  0  0 0.75em;
+            border: 0.3em #930000 solid;
+            font-size: 0.7em;
+            row-gap: 1.8em;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            box-sizing: border-box;
 
             > .basket {
 
@@ -58,20 +75,22 @@
 
     > .top-side {
       padding: 0.5em;
+      border-radius: 0.5em;
       border: 0.1em solid black;
       column-gap: 0.5em;
-      justify-content: space-between;
       display: flex;
+      justify-content: space-between;
+
 
       > .info {
         row-gap: 0.8em;
         display: flex;
+        align-items: flex-start;
         flex-direction: column;
 
         > label {
 
         }
-
       }
 
       > .face {

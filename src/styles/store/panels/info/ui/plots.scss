@@ -1,27 +1,30 @@
 .plots-product-card {
-  row-gap: 0.2em;
   border-radius: 1em;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   max-width: 100%;
+  z-index: 0;
 
-  .title {
-    background: #0cb346;
+  > .title {
+    border-radius: 0.5em;
+    background: #a8e3ba;
     padding: 0.5em;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
-  .body {
-    padding: 0.2em;
+  > .body {
+    border-radius: 0.5em;
+    margin: 0.5em;
+    background: white;
+    padding: 0.7em;
     display: flex;
     flex-direction: column;
     row-gap: 0.3em;
 
-    label {
+    > label {
       column-gap: 1em;
       display: flex;
       justify-content: space-between;
@@ -36,7 +39,7 @@
       display: flex;
       justify-content: flex-end;
 
-      .owner {
+      > .owner {
         font-size: 0.8em;
         background: rgba(12, 123, 179, 0.55);
         padding: 0.5em;
@@ -52,7 +55,7 @@
           justify-content: space-between;
           width: 100%;
 
-          .avatar {
+          > .avatar {
             padding: 0.5em;
             border-radius: 50%;
             background: #6558cc;
@@ -82,13 +85,13 @@
       }
     }
 
-    .content {
+    > .content {
       padding: 0.5em;
       row-gap: 1em;
       display: flex;
       flex-direction: column;
 
-      .description {
+      > .description {
         max-height: 9em;
         padding: 0.7em;
         border-radius: 1em;
@@ -100,17 +103,40 @@
       }
     }
   }
-  .actions {
-    background: #00ff3c;
+
+  > .actions {
+    border-radius: 0.5em;
+    background: #a6d3b1;
     padding: 0.5em;
     column-gap: 1em;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    box-sizing: border-box;
+    z-index: 0;
 
-    button {
-      width: 7em;
-      font-size: 0.8em;
+    > .action {
+
+      &.basket {
+        font-size: 0.6em;
+      }
+
+      &.buying {
+        font-size: 0.4em;
+      }
+
+      &.markUp {
+
+        > button {
+
+        }
+
+        > .cost {
+          padding: 0.2em;
+          background: white;
+          position: absolute;
+        }
+      }
     }
+
   }
 }

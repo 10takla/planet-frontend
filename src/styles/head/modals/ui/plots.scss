@@ -50,7 +50,7 @@
             }
 
             > .buying {
-              font-size: 0.8em;
+              font-size: 0.2em;
               position: relative;
 
               > label {
@@ -170,6 +170,7 @@
               align-items: flex-end;
 
               > label {
+                background: rgba(255, 255, 255, 0.3);
                 column-gap: 0.5em;
                 display: flex;
                 align-items: flex-end;
@@ -197,34 +198,7 @@
             }
 
             > .sale-state {
-              width: 80%;
-              column-gap: 0.5em;
-              font-size: 0.8em;
-              display: flex;
-              align-items: center;
-              text-align: right;
-              justify-content: flex-end;
-
-              > .indicator {
-                height: 1.8em;
-                aspect-ratio: 1/1;
-                background: red;
-                border-radius: 50%;
-
-                &:hover {
-                  transform: scale(1.1);
-                }
-
-                &.active {
-                  background: green;
-                }
-
-                > .waiting {
-                  width: 100%;
-                  height: 100%;
-                }
-
-              }
+              font-size: 1.3em;
             }
 
             .waiting {

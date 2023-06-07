@@ -1,6 +1,6 @@
 @import "ui/range";
 @import "ui/button";
-@import "ui/select";
+@import "ui/selector";
 
 .store-panels-actions {
   display: flex;
@@ -68,46 +68,63 @@
         }
       }
 
-      .action-description {
-        max-width: 20em;
-        padding: 0.1em;
-        background: rgba(255, 255, 255, 0.8);
-        font-size: 0.8em;
-        text-align: center;
-        position: absolute;
-        box-sizing: border-box;
-        visibility: hidden;
-        z-index: 100;
-
-        &.column.left {
-          right: 100%;
-        }
-
-        &.column.right {
-          left: calc(100%);
-        }
-
-        &.row.left {
-          top: calc(100%);
-        }
-
-        &.row.right {
-          top: calc(100%);
-        }
-      }
-
       .action-element:hover + .action-description {
         visibility: visible;
       }
+
+      .hovered-element {
+        height: 100%;
+        width: 100%;
+
+        > .action-element {
+          aspect-ratio: 1/1;
+          padding: 0.4em;
+          background: #34aebb;
+          border-radius: 50%;
+          box-sizing: border-box;
+
+          &.active {
+            background: #bb3636;
+          }
+
+          &.select {
+            span {
+              font-weight: bold;
+              font-size: 1.3em;
+            }
+          }
+        }
+      }
+
     }
   }
 
   & > .action-list {
+    gap: 1em;
     position: static;
     opacity: 1;
     visibility: visible;
   }
 }
 
+.action-list.row > .action {
+  > .action-list {
+    width: 100%;
+  }
+
+  > div > div > .action-element {
+    height: 100%;
+  }
+}
+
+.action-list.column > .action {
+  > .action-list {
+    height: 100%;
+  }
+
+  > div > div > .action-element {
+    width: 100%;
+  }
+}
 
 

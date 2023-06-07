@@ -1,19 +1,17 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
-import {appStateReducer} from "./slices/AppStateSlice";
+import {appStateReducer} from "./slices/app/AppStateSlice";
 import {userDataReducer} from "./slices/UserDataSlice";
-import {storeStateReducer} from "./slices/StoreStateSlice";
-import {planetStateReducer} from "./slices/PlanetStateSlice";
-import {messageStateReducer} from "./slices/MessagesStateSlice";
-import {storePlanetSceneReducer, storePlanetSceneSlice,} from "./slices/sceneSlices/StorePlanetSceneSlice";
+import {planetStateReducer} from "./slices/scene/PlanetStateSlice";
+import {messageStateReducer} from "./slices/app/MessagesStateSlice";
+import {planetSceneReducer} from "./slices/scene/planetSceneSlice";
 
 
 const rootReducer = combineReducers({
     appStateReducer,
     userDataReducer,
-    storeStateReducer,
     planetStateReducer,
     messageStateReducer,
-    storePlanetSceneReducer,
+    planetSceneReducer,
 })
 
 export const setupStore = () => {

@@ -26,6 +26,7 @@
     overflow: hidden;
     column-gap: var(--store-panels-padding);
     display: flex;
+    align-items: flex-start;
     justify-content: space-between;
 }
 

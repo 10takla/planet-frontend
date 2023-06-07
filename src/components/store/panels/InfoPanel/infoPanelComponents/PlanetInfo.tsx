@@ -1,36 +1,21 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {useAppDispatch, useAppSelector} from "../../../../../hooks/redux";
+import React, {useEffect, useRef, useState} from 'react';
+import {useAppDispatch} from "../../../../../hooks/redux";
 import AnimationByCss from "../../../../ui/animations/AnimationByCss";
-import {planetStateSlice} from "../../../../../reducers/slices/PlanetStateSlice";
 import {getAnyColor} from "../../../../../helpers/store/threejs";
-import PlanetScene from "../../../../ui/threejs/PlanetScene";
-import {planetInfoSettings} from "../../../../../configs/scene settings/planetInfo";
 import {gsap} from "gsap";
 import {MeshPhongMaterialParameters} from "three";
 import AnimationTextPrinting from "../../../../ui/animations/AnimationTextPrinting";
 import {ASSETS_URL} from "../../../../../config";
 import {RequiredFields} from "../../../../../types/functionsTS";
-import {IPlanet} from "../../../../../types/store/threejs/planetObjectsTypes";
-import {useFetch} from "../../../../../hooks/useFetch";
+import {IPlanet} from "../../../../../types/entities/planetType";
+import {usePlanet} from "../../../../../hooks/useDataById";
+import PlanetScene from "../../../../ui/threejs/PlanetScene";
 
 const PlanetInfo = () => {
     const dispatch = useAppDispatch()
     const [visible, setVisible] = useState(true);
-    const {activePlanet} = useAppSelector(state => state.planetStateReducer)
     type RF = 'description' | 'color' | 'rating' | 'plots_count' | 'type' | 'diameter'
-    const [planet, isWaiting] = useFetch<IPlanet, RequiredFields<IPlanet, RF>>({
-        endpoint: `planets/${activePlanet!.id}/`,
-        body: {
-            fields: ['description', 'color', "rating", "plots_count", "type", "diameter"]
-        }
-    })
-
-    useEffect(() => {
-        if (planet) {
-            dispatch(planetStateSlice.actions.setActivePlanet(planet))
-            dispatch(planetStateSlice.actions.setPlanets(planet))
-        }
-    }, [planet]);
+    const planet = usePlanet<RequiredFields<IPlanet, RF>>()
 
     const gridMaterialRef = useRef<MeshPhongMaterialParameters>()
 
@@ -46,48 +31,44 @@ const PlanetInfo = () => {
         }
     }, [gridMaterialRef.current]);
 
-    const settings = useMemo(() => {
-        planetInfoSettings.planetProperties.slices.grid!.material!.ref = gridMaterialRef
-
-        return planetInfoSettings
-    }, []);
-
     const infoList = [
-        {key: 'diameter', label: 'Диаметр', body: `км`, text: activePlanet?.diameter},
-        {key: 'type', label: 'Тип', body: ``, text: activePlanet?.type},
-        {key: 'plots_count', label: 'Число участков', body: ``, text: activePlanet?.plots_count},
-        {key: 'rating', label: 'Рейтинг', body: `☆`, text: activePlanet?.rating},
+        {key: 'diameter', label: 'Диаметр', body: `км`, text: planet?.diameter},
+        {key: 'type', label: 'Тип', body: ``, text: planet?.type},
+        {key: 'plots_count', label: 'Число участков', body: ``, text: planet?.plots_count},
+        {key: 'rating', label: 'Рейтинг', body: `☆`, text: planet?.rating},
     ]
 
     return (
         <div className="store-panels-info-planet"
-             style={activePlanet?.color && {background: getAnyColor(activePlanet.color)}}
+
         >
-            <div className={'title'}>
+            <div className={'title'} style={planet?.color && {background: getAnyColor(planet.color, 1, 50)}}>
+                <h3>{planet?.name}</h3>
+            </div>
+            <div className={'body'}>
                 <div className={'info'}>
-                    <h3>{activePlanet?.name}</h3>
-                    {activePlanet && infoList.map(o => o.key).every(key => key in activePlanet) &&
+                    {planet && infoList.map(o => o.key).every(key => key in planet) &&
                         <div className={'list'}>
                             {infoList.map(item =>
                                 <label key={item.key}>{item.label}: <span>{item.text}</span>{item.body}</label>
                             )}
                         </div>
                     }
+                    {planet && <PlanetScene slice={'planetInfo'} planet={planet}/>}
                 </div>
-                {activePlanet && <PlanetScene planet={activePlanet} {...settings}/>}
-            </div>
-            <div className={'body'}>
-                {activePlanet?.description &&
-                    <div className={'description'}>
-                        <img src={ASSETS_URL + "/images/arrow.svg"} onClick={e => setVisible(!visible)}/>
-                        {activePlanet &&
-                            <AnimationByCss in={visible} timeout={"--animation-info-planet"}
-                                            mountOnEnter unmountOnExit classNames="animation-info-planet">
-                                <AnimationTextPrinting text={activePlanet.description} delay={120}
-                                                       rangeCutString={[1, 4]}/>
-                            </AnimationByCss>}
-                    </div>
-                }
+
+                    {planet &&
+                        <div className={'description'}>
+                            <img src={ASSETS_URL + "/images/arrow.svg"} onClick={e => setVisible(!visible)}/>
+                            {planet &&
+                                <AnimationByCss in={visible} timeout={"--animation-info-planet"}
+                                                mountOnEnter unmountOnExit classNames="animation-info-planet">
+                                    <AnimationTextPrinting text={planet.description} delay={120}
+                                                           rangeCutString={[1, 4]}/>
+                                </AnimationByCss>}
+                        </div>
+                    }
+
             </div>
         </div>
     );

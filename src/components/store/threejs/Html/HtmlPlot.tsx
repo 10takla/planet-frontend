@@ -1,24 +1,28 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC} from 'react';
 import {Html} from "@react-three/drei";
-import {useAppSelector} from "../../../../hooks/redux";
-import {IPlotProperties} from "../../../../types/store/threejs/sceneTypes";
-import {IPlotForStore} from "../../../../types/store/threejs/planetObjectsTypes";
+import {HtmlProps} from "@react-three/drei/web/Html";
+import {Provider} from "react-redux";
+import {store} from "../../../../index";
 
-interface IHtmlPlot extends IPlotProperties {
-    plot: IPlotForStore
-    center: [number, number, number]
+interface IHtmlPlot extends HtmlProps {
     children: React.ReactNode
 }
 
-const HtmlPlot: FC<IHtmlPlot> = ({center, plot, children, ...props}) => {
+const HtmlPlot: FC<IHtmlPlot> = ({children, ...props}) => {
+
     return (
-        <Html as='div' center={true} position={center}
+
+        <Html as='div' center={true}
               occlude={[]}
-              zIndexRange={[90]}
-              distanceFactor={5 * plot.area ** 0.2}
-              className={'store-window-plot'}>
-            {children}
+              zIndexRange={[0]}
+              className={'store-window-plot'}
+              {...props}
+        >
+            <Provider store={store}>
+                {children}
+            </Provider>
         </Html>
+
     );
 };
 

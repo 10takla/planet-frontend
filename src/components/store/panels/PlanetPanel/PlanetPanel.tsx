@@ -1,49 +1,45 @@
-import React, {useEffect, useState} from 'react';
-import {useAppDispatch} from "../../../../hooks/redux";
-import {IPlanet} from "../../../../types/store/threejs/planetObjectsTypes";
-import {planetStateSlice} from "../../../../reducers/slices/PlanetStateSlice";
-import {useFetch} from "../../../../hooks/useFetch";
+import React, {useEffect, useMemo, useState} from 'react';
+import {useAppDispatch, useAppSelector} from "../../../../hooks/redux";
+import {planetStateSlice} from "../../../../reducers/slices/scene/PlanetStateSlice";
 import {RequiredFields} from "../../../../types/functionsTS";
 import FetchList from "../../../ui/base/scrollList/FetchList/FetchList";
 import PlanetButton from "./ui/PlanetButton";
+import {IPlanet} from "../../../../types/entities/planetType";
 
 const PlanetPanel = () => {
     const dispatch = useAppDispatch()
-    const [search, setSearch] = useState<string>('');
-    type RF = RequiredFields<IPlanet, 'textures' | 'plots' | 'color'>[]
-    const [planets, isWaiting] = useFetch<IPlanet, RF>({
-        endpoint: 'planets/',
-        body: {
-            fields: ['textures', 'plots', 'color'],
-            plots_fields: ["mesh", "area", "user"],
-            search: search,
-            to: 6
-        }
-    }, [search])
+    const authUser = useAppSelector(state => state.userDataReducer.authUser)
 
-    useEffect(() => {
-        if (planets) {
-            dispatch(planetStateSlice.actions.resetPlanets(planets))
-            dispatch(planetStateSlice.actions.setActivePlanetId(planets[3].id))
-        }
-    }, [planets]);
+    type RF = RequiredFields<IPlanet, 'textures' | 'plots' | 'color' | 'description'
+        | 'rating' | 'plots_count' | 'type' | 'diameter'>[]
 
-    const body = {
-        endpoint: 'planets/',
-        body: {
-            fields: ['textures', 'plots', 'color'],
-            plots_fields: ["mesh", "area", "user"],
-        },
-        isToken: true,
-    }
+    const body = useMemo(() => {
+        const basePlotsFields = ["mesh", "area", "owner", 'surfaceArea', 'cost', "isSale", "color",]
+        const plotsFieldsIsAuth = authUser ? ['basket', 'owner', 'buying', 'markUp', 'price'] : []
+        return {
+            endpoint: 'planets/',
+            body: {
+                fields: ['textures', 'plots', 'color', 'description', "rating", "plots_count", "type", "diameter"],
+                plots_fields: [...basePlotsFields, ...plotsFieldsIsAuth],
+            },
+            isToken: !!authUser,
+        }
+    }, [authUser]);
 
     const [allPlanets, setAllPlanets] = useState<RF>([]);
+
+    useEffect(() => {
+        if (allPlanets.length) {
+            dispatch(planetStateSlice.actions.resetPlanets(allPlanets))
+            dispatch(planetStateSlice.actions.setActivePlanetId(allPlanets[3].id))
+        }
+    }, [allPlanets]);
 
     return (
         <div className="store-panels-planets">
             { // @ts-ignore
-                <FetchList size={10} returnList={setAllPlanets} {...body}>
-                    {allPlanets?.map((planet) => (
+                <FetchList size={9} returnList={setAllPlanets} {...body}>
+                    {allPlanets.map((planet) => (
                         <PlanetButton key={planet.id} planet={planet}/>
                     ))}
                 </FetchList>}

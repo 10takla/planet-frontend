@@ -1,33 +1,28 @@
 import React, {useEffect} from 'react';
-import {fetchUserData} from "../../../reducers/ActionCreator";
 import {useAppDispatch, useAppSelector} from "../../../hooks/redux";
-import {appStateSlice} from "../../../reducers/slices/AppStateSlice";
-import {ASSETS_URL} from "../../../config";
-import Currency from "../../ui/base/sales/Currency";
+import {appStateSlice} from "../../../reducers/slices/app/AppStateSlice";
+import {ASSETS_URL, SERVER_HOSTS} from "../../../config";
+import Currency from "../../ui/info/plot/Currency";
+import UserFocus from "../../ui/userViews/UserFocus";
+import UserFirstView from "../../ui/userViews/UserFirstView/UserFirstView";
 
 const UserHead = () => {
     const dispatch = useAppDispatch()
-    const token = useAppSelector(state => state.userDataReducer.authState.token) as string
-
-    useEffect(() => {
-        fetchUserData(dispatch, token)
-    }, []);
-
-
-    const user = useAppSelector(state => state.userDataReducer.currentUser)
+    const authUser = useAppSelector(state => state.userDataReducer.authUser!)
     const {visibleUserMenu, currency} = useAppSelector(state => state.appStateReducer)
+
     return (
         <div className='user'>
             <div className='wallet'>
                 <img src={ASSETS_URL + "/images/wallet.svg"}/>
-                <div className='cash_in selectable'
+                <div className='cash_in'
                      onClick={() => dispatch(appStateSlice.actions.setActiveModal('wallet'))}>
-                    {user && <Currency amount={user.wallet}/>}
+                    {authUser && <Currency amount={authUser.wallet} currency={'point'}/>}
                     <img src={ASSETS_URL + "/images/add.svg"}/>
                 </div>
             </div>
-            <img onClick={() => dispatch(appStateSlice.actions.setVisibleUserMenu(!visibleUserMenu))}
-                 className='selectable' src={user?.logo}/>
+            <UserFirstView user={authUser}
+                           onClick={() => dispatch(appStateSlice.actions.setVisibleUserMenu(!visibleUserMenu))}/>
         </div>
     );
 };

@@ -1,7 +1,10 @@
-import {IPlanet, IPlot} from "../store/threejs/planetObjectsTypes";
 import {IUser} from "../user/userTypes";
+import {IPlot} from "../entities/plotType";
+import {IPlanet} from "../entities/planetType";
+import {IBuying} from "../entities/buyingType";
+import {IBasket} from "../entities/basketType";
 
-export type AllowModels = IPlanet | IPlot | IUser
+export type AllowModels = IPlanet | IPlot | IUser | IBuying | IBasket
 
 interface IBody<T> {
     fields?: (keyof T)[]
@@ -13,26 +16,18 @@ interface IBody<T> {
 type PreBody<F, S, T extends string> = IBody<F> & { [K in keyof IBody<S> as `${T}_${keyof IBody<S>}`]: IBody<S>[K] }
 
 
-export interface IFetch<T extends AllowModels> {
+export interface IFetch<T = any> {
     body?: T extends IPlot ? IBody<IPlot> :
-        T extends IPlanet ? PreBody<IPlanet, IPlot, 'plots'> : never
+        T extends IPlanet ? PreBody<IPlanet, IPlot, 'plots'> : object
     endpoint: `${string}/`
     isToken?: boolean
 }
 
-type PlanetEndPoints = Array<'planets' | IPlanet['id'] | undefined | 'plots'>
-
-type PlotsEndPoints = PlanetEndPoints & Array<'plots' | IPlot['id'] | 'update'>
-
-
-export interface IPreFetch<T extends AllowModels> extends Omit<IFetch<T>, 'endpoint'> {
-    endpoint:
-        T extends IPlot ? PlotsEndPoints :
-            T extends IPlanet ? PlanetEndPoints :
-                never
+export enum FetchMethodEnum  {
+    create = "POST",
+    delete = "DELETE",
+    update = "PATCH",
 }
-
-export interface IFetchUpdate {
-    body: Omit<IPlot, 'id' | 'name'>
-    endpoint: `${string}/`
+export interface IFetchAnyMethod extends IFetch{
+    action: "create" | "delete" | "update"
 }

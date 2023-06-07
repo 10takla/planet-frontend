@@ -15,7 +15,13 @@ export interface IUser {
     rank?: number
 }
 
-export type FieldsFirstViewUserType = 'logo'
+type FieldsCurrentUserType = 'logo' | 'email' | 'wallet' | 'color'
+
+export interface IAuthUser extends RequiredFields<IUser, FieldsCurrentUserType> {
+    token: string
+}
+
+export type FieldsFirstViewUserType = 'logo' | 'color'
 
 export interface IFirstViewUser extends RequiredFields<IUser, FieldsFirstViewUserType> {
 
@@ -24,12 +30,6 @@ export interface IFirstViewUser extends RequiredFields<IUser, FieldsFirstViewUse
 export type FieldsFocusViewUserType = 'rank' | 'status' | 'telegramName' | 'color' | 'plotCapital' | 'plotsCount'
 
 export interface IFocusViewUser extends RequiredFields<IFirstViewUser, FieldsFocusViewUserType> {
-
-}
-
-type FieldsCurrentUserType = 'logo' | 'email' | 'wallet'
-
-export interface ICurrentUser extends RequiredFields<IUser, FieldsCurrentUserType> {
 
 }
 

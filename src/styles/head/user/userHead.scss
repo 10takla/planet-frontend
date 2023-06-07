@@ -17,6 +17,12 @@
       width: 3em;
     }
 
+    &:hover {
+      transition: all 800ms;
+      cursor: pointer;
+      background: #bdbdbd;
+    }
+
     .cash_in {
       display: flex;
       flex-direction: row;
@@ -25,6 +31,7 @@
       border-radius: 0.5em;
       background: rgba(255, 255, 0, 0.32);
       gap: 0.2em;
+
 
       > img {
         width: 2em;

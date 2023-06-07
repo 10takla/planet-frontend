@@ -1,23 +1,32 @@
 import React, {useEffect, useState} from 'react';
 import {useAppSelector} from "../../../../hooks/redux";
-import {ASSETS_URL} from "../../../../config";
-import {FieldsFocusViewUserType, IFocusViewUser, IUser} from "../../../../types/user/userTypes";
-import Currency from "../../../ui/base/sales/Currency";
-import {useFetch} from "../../../../hooks/useFetch";
-import {IPlot} from "../../../../types/store/threejs/planetObjectsTypes";
+import {ASSETS_URL, USER_ICONS_URL} from "../../../../config";
+import {IFocusViewUser, IUser} from "../../../../types/user/userTypes";
+import Currency from "../../../ui/info/plot/Currency";
+import {useFetchGet} from "../../../../hooks/useFetch";
 import {RequiredFields} from "../../../../types/functionsTS";
 import Basket from "../../../ui/actions/stateChangers/Basket/Basket.";
 import Label from "../../../ui/base/Label";
 import OpenInStore from "../../../ui/actions/OpenInStore";
 import {IFetch} from "../../../../types/fetch/fetchTypes";
 import FetchList from "../../../ui/base/scrollList/FetchList/FetchList";
+import {IPlot} from "../../../../types/entities/plotType";
 
 
 const UserModal = ({}) => {
     const {focusUserId} = useAppSelector(state => state.userDataReducer)
-    const [user, isWaitingUser] = useFetch<IUser, IFocusViewUser>(
-        {endpoint: `user/${focusUserId}/`}, [focusUserId]
+    const [user, fetchGetUser, isWaitingUser] = useFetchGet<IUser, IFocusViewUser>(
+         [focusUserId]
     )
+    useEffect(() => {
+        if (focusUserId){
+            fetchGetUser({
+                endpoint: `user/${focusUserId}/`,
+                isToken: true,
+            })
+        }
+
+    }, [focusUserId]);
 
     type RF = RequiredFields<IPlot, 'cost' | 'planet' | 'basket'>
     const [allPlots, setAllPlots] = useState<RF[]>([]);
@@ -39,7 +48,7 @@ const UserModal = ({}) => {
                         <div className={'item'} key={plot.id}>
                             <div className={'info'}>
                                 <h4>{plot.name}</h4>
-                                <Label>Цена: <Currency amount={plot.cost}/></Label>
+                                <Label>Стоимость: <Currency amount={plot.cost}/></Label>
                                 <Label>Планета: {plot.planet?.name}</Label>
                             </div>
                             <div className={'actions'}>
@@ -53,13 +62,13 @@ const UserModal = ({}) => {
             {user && <div className={'profile'}>
                 <div className={'top-side'}>
                     <div className={'info'}>
-                        <label className={'plots'}>Учатсков: {user.plotsCount}</label>
-                        <label className={'rank'}>Метсо в рейтинге: {user.rank}</label>
+                        <Label className={'plots'}>Участков: {user.plotsCount}</Label>
+                        <Label className={'rank'}>Место в рейтинге: {user.rank}</Label>
                         {/*<label className={'capital'}>Капитал учатсков: {<Currency amount={userViews.plotCapital}/>}</label>*/}
                     </div>
                     <div className={'face'}>
                         <div className={'avatar'} style={{background: user.color}}>
-                            <img src={user.logo}/>
+                            <img src={USER_ICONS_URL + user.logo}/>
                         </div>
                         <span className={'name'}>{user.username}</span>
                     </div>

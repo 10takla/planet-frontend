@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import Waiting from "../Waiting/Waiting";
 
 
@@ -11,13 +11,19 @@ interface IListPlots {
 
 const ScrollList: FC<IListPlots> = ({list, isWaiting, setIsFetching, children}) => {
 
+    const [scrollOffset, setScrollOffset] = useState(0);
+
     const handleOnScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-        //@ts-ignore
-        const [offsetTop, height] = [e.target.scrollTop, e.target.scrollHeight]
-        if (height - offsetTop < 500) {
-            setIsFetching(true)
+        const {scrollTop, scrollHeight, clientHeight} = e.currentTarget;
+        setScrollOffset(scrollTop)
+
+        if (scrollTop > scrollOffset) {
+            if ((scrollHeight - (scrollTop + clientHeight) <= 5)) {
+                setIsFetching(true)
+            }
         }
-    }, []);
+
+    }, [scrollOffset]);
 
 
     return (
@@ -27,7 +33,7 @@ const ScrollList: FC<IListPlots> = ({list, isWaiting, setIsFetching, children}) 
             >
                 {children}
             </div>
-            <Waiting style={{alignSelf: "center",position: 'absolute', bottom: 0}}  isWaiting={isWaiting}/>
+            <Waiting style={{alignSelf: "center", position: 'absolute', bottom: 0}} isWaiting={isWaiting}/>
         </React.Fragment>
     );
 };

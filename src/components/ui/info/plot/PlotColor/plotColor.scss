@@ -1,0 +1,12 @@
+.block-color {
+  border-radius: 0.5em;
+  padding: 0.6em;
+  width: 4em;
+  aspect-ratio: 1/1;
+  box-sizing: border-box;
+
+  > .color {
+    width: 100%;
+    aspect-ratio: 1/1;
+  }
+}

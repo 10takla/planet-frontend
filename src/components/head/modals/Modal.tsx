@@ -1,22 +1,24 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useAppDispatch, useAppSelector} from "../../../hooks/redux";
-import {appStateSlice} from "../../../reducers/slices/AppStateSlice";
-import {IModalElements, ModalType} from "../../../types/user/modalTypes";
-import AnimationByCss from "../../ui/animations/AnimationByCss";
+import {appStateSlice} from "../../../reducers/slices/app/AppStateSlice";
+import WalletModal from "./content/WalletModal";
 import SettingsModal from "./content/SettingsModal";
-import Wallet from "./content/Wallet";
-import PlotsContent from "./content/plotsContent/PlotsContent";
+import AnimationByCss from "../../ui/animations/AnimationByCss";
+import BasketModal from "./content/BasketModal";
 import {ASSETS_URL} from "../../../config";
+import {IModalElements} from "../../../types/user/modalTypes";
 import UserModal from "./content/UserModal";
+import PlotsModal from "./content/PlotsModal";
+
 
 
 const Modal = () => {
     const modals: IModalElements[] = [
-        {title: 'Кошелек ', name: 'wallet', content: <Wallet/>},
-        {title: 'Участки ', name: 'plots', content: <PlotsContent/>},
-        {title: 'Корзина ', name: 'basket'},
-        {title: 'Настройки аккаунта ', name: 'settings', content: <SettingsModal/>},
-        {title: 'Пользователь ', name: 'user', content: <UserModal/>},
+        {title: 'Пополнить счет', name: 'wallet', content: <WalletModal/>},
+        {title: 'Мои Участки', name: 'plots', content: <PlotsModal/>},
+        {title: 'Корзина ', name: 'basket', content: <BasketModal/>},
+        {title: 'Настройки аккаунта', name: 'settings', content: <SettingsModal/>},
+        {title: 'Пользователь', name: 'user', content: <UserModal/>},
     ]
     const animationRef = useRef<JSX.Element>(null);
     const dispatch = useAppDispatch()
@@ -37,7 +39,7 @@ const Modal = () => {
                         mountOnEnter unmountOnExit
                         onExited={() => dispatch(appStateSlice.actions.setActiveModal(null))}
         >
-            <div className='modal-back'>
+            <div className='modal-back app-modal'>
                 <React.Fragment>
                     {modals.map(modal => (
                         activeModal === modal.name && (

@@ -1,71 +1,96 @@
-import {useEffect, useState} from "react";
-import {fetchPlanetsData} from "../reducers/ActionCreator";
-import {AllowModels, IFetch} from "../types/fetch/fetchTypes";
+import {useCallback, useEffect, useState} from "react";
+import {fetchCUD, fetchPlanetsData} from "../reducers/ActionCreator";
+import {AllowModels, IFetch, IFetchAnyMethod} from "../types/fetch/fetchTypes";
 import {useAppDispatch} from "./redux";
-import {messagesStateSlice} from "../reducers/slices/MessagesStateSlice";
-import {requestURL} from "../helpers/requestApi";
-import {IPlot} from "../types/store/threejs/planetObjectsTypes";
-import {getCookie} from "../helpers/cookieApi";
-import plot from "../components/store/threejs/Plots/Plot";
-import {RequiredFields} from "../types/functionsTS";
+import {messagesStateSlice} from "../reducers/slices/app/MessagesStateSlice";
 
-interface IProps {
-    endpoint: `${string}/`
-    body: {},
-
-}
-
-export const useFetch = <M extends AllowModels, RF>(props: IFetch<M>, dep: any[] = []) => {
+export const useFetchGet = <M extends AllowModels, RF>(dep: any[] = []) => {
     const dispatch = useAppDispatch()
-
     const [data, stData] = useState<RF | null>(null);
     const [isWaiting, setIsWaiting] = useState(false);
 
-    useEffect(() => {
+    const makeRequest = useCallback(async (fetchProps: IFetch<M>) => {
         setIsWaiting(true)
-        fetchPlanetsData<RF, M>({...props})
-            .then(data => stData(data))
+        fetchPlanetsData<RF, M>({...fetchProps})
+            .then(data => {
+                stData(data)
+            })
             .catch(error => {
-                console.log(error)
                 const message = {text: error.statusText, isNotice: true}
                 dispatch(messagesStateSlice.actions.setLogs([message]))
             })
             .finally(() => setIsWaiting(false))
-    }, dep)
-    return [data, isWaiting] as [RF | null, boolean]
+    }, [dep])
+
+    return [data, makeRequest, isWaiting] as [RF | null, (fetchProps: IFetch<M>) => void, boolean]
 }
 
-export const useUpdatePlots = (plotId: number, body: any): [any, boolean] => {
+export const useFetchCRUDE = <T = object | null>(object: T | null, dep: any[] = []) => {
+    const [updated, setUpdated] = useState(object);
+    const [error, setError] = useState<string | null>(null);
     const [isWaiting, setIsWaiting] = useState(false);
-    const [update, setUpdate] = useState<IPlot | null>(null)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
-        if (body) {
-            setIsWaiting(true)
-            fetch(requestURL(`planets/plots/${plotId}/update/`), {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Token ${getCookie('token')}`,
-                },
-                body: JSON.stringify(body)
+        setUpdated(object)
+    }, [object])
+
+    const makeUpdate = useCallback((fetchProps: IFetchAnyMethod) => {
+        setIsWaiting(true)
+        fetchCUD<T>({...fetchProps})
+            .then(create => {
+                setUpdated(create)
             })
-                .then(response => {
-                    setIsWaiting(false)
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then((data: IPlot) => {
-                    setUpdate(data)
-                })
-                .catch(error => {
-                    setUpdate(body)
-                })
+            .catch(error => {
+                setError(error)
+            })
+            .finally(() => {
+                setIsWaiting(false)
+            })
+    }, [dep]);
 
+    return [updated, makeUpdate, isWaiting, error] as [T | null, (action: IFetchAnyMethod) => void, boolean, string  | null]
+}
+
+export const useFetchCreateDestroy = <T = object>(object: T | null, fetchProps: IFetch): [boolean, T | null, () => void, boolean] => {
+    const [changed, setChanged] = useState(object);
+    const [isExist, setIsExist] = useState(!!object);
+    const [isWaiting, setIsWaiting] = useState(false);
+    const [created, makeCreate, isWaitingCreate] = useFetchCRUDE<T>(changed)
+    const [destroy, makeDestroy, isWaitingDestroy] = useFetchCRUDE<T>(changed)
+
+    useEffect(() => {
+        setIsExist(!!changed)
+    }, [changed]);
+
+    useEffect(() => {
+        setIsWaiting(isWaitingCreate)
+    }, [isWaitingCreate])
+    useEffect(() => {
+        setIsWaiting(isWaitingDestroy)
+    }, [isWaitingDestroy])
+    useEffect(() => {
+        setChanged(created)
+    }, [created])
+    useEffect(() => {
+        setChanged(destroy)
+    }, [destroy])
+
+    const makeChange = useCallback(() => {
+        if (isExist) {
+            makeDestroy({
+                ...fetchProps,
+                endpoint: fetchProps.endpoint,
+                action: "delete"
+            })
+        } else {
+            makeCreate({
+                ...fetchProps,
+                endpoint: fetchProps.endpoint,
+                action: "delete"
+            })
         }
-    }, [body])
+    }, [isExist]);
 
-    return [update, isWaiting]
+    return [isExist, changed, makeChange, isWaiting]
 }

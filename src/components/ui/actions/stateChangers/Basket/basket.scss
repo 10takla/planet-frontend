@@ -6,16 +6,18 @@
   justify-content: center;
 
   > img {
+    padding: 0.3em;
     width: 4em;
     border-radius: 0.5em;
+    box-sizing: border-box;
 
     &.active {
-      background: rgba(246, 203, 163, 0.89);
+      background: rgba(227, 189, 158, 0.89);
     }
   }
 
   .waiting {
-    font-size: 0.5em;
+    font-size: 1.1em;
     position: absolute;
   }
 }

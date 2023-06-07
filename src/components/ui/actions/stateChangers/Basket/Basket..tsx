@@ -1,82 +1,67 @@
-import React, {FC, MouseEvent, useCallback, useState} from 'react';
-import {IBasket, IPlot} from "../../../../../types/store/threejs/planetObjectsTypes";
-import {requestURL} from "../../../../../helpers/requestApi";
-import {getCookie} from "../../../../../helpers/cookieApi";
+import React, {FC, HTMLProps, MouseEvent, useCallback, useEffect} from 'react';
 import HoverDescription from "../../../info/HoverDescription/HoverDescription";
 import Waiting from "../../../base/Waiting/Waiting";
 import "./basket.scss"
+import {IPlot} from "../../../../../types/entities/plotType";
+import {IBasket} from "../../../../../types/entities/basketType";
+import {useFetchCRUDE} from "../../../../../hooks/useFetch";
+import {useAppDispatch} from "../../../../../hooks/redux";
+import {planetStateSlice} from "../../../../../reducers/slices/scene/PlanetStateSlice";
+import {messagesStateSlice} from "../../../../../reducers/slices/app/MessagesStateSlice";
+import ErrorCommands from "../../../../commands/ErrorComands/ErrorCommands";
 
 
-interface IBasketComponent {
-    basket: IBasket
+interface IBasketComponent extends HTMLProps<HTMLElement>{
+    basket: IBasket | null
     plotId: IPlot['id']
 }
 
-const Basket: FC<IBasketComponent> = ({basket, plotId}) => {
-    const [basketTmp, setBasketTmp] = useState(basket);
-    const [isActive, setIsActive] = useState(!!basket);
-    const [isWaiting, setIsWaiting] = useState(false);
+const Basket: FC<IBasketComponent> = ({basket, plotId, ...props}) => {
+    const dispatch = useAppDispatch()
+    const [updated, makeUpdate, isWaiting, error] = useFetchCRUDE<IBasket>(basket, [])
 
-    const setInBasket = useCallback((event: MouseEvent<HTMLImageElement>) => {
-        setIsWaiting(true)
-        console.log(isWaiting)
-        if (isActive) {
-            fetch(requestURL(`goods/basket/${basketTmp.id}/delete/`), {
-                method: "DELETE",
-                headers: {
-                    "Authorization": `Token ${getCookie('token')}`,
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response;
-                })
-                .then((data) => {
-                    setIsActive(false)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => setIsWaiting(false))
-        } else {
-            fetch(requestURL(`goods/basket/create/`), {
-                method: "POST",
-                headers: {
-                    'Content-type': 'application/json',
-                    "Authorization": `Token ${getCookie('token')}`,
-                },
-                body: JSON.stringify(
-                    {
-                        plot: plotId,
-                    }
-                )
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then((data: IBasket) => {
-                    setBasketTmp(data)
-                    setIsActive(true)
-                })
-                .catch(error => {
-
-                })
-                .finally(() => setIsWaiting(false))
+    useEffect(() => {
+        if (updated) {
+            dispatch(planetStateSlice.actions.changePlot(
+                {
+                    plotId: plotId, change: {basket: updated}
+                }))
         }
-    }, [isActive]);
+    }, [updated]);
+
+    const onHoverDescriptionClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
+        makeUpdate({
+            endpoint: 'basket/' + (updated ? `${updated.id}/` : '') as `${string}/` ,
+            body: {
+                plot: plotId
+            },
+            action: updated ? 'delete' : 'create'
+        })
+    }, [plotId, updated]);
+
+    useEffect(() => {
+        if (error){
+            dispatch(messagesStateSlice.actions.setLogs([{
+                text: (
+                    <>
+                        Вы не авторизованы. <ErrorCommands statusCode={Number(error)}/>
+                    </>
+                ),
+                date: new Date().toLocaleDateString(),
+                isNotice: true,
+                // lifetime: 50000
+            }]))
+        }
+    }, [error]);
 
     return (
-        <HoverDescription className={['basket', isActive ? 'active' : ''].join(' ')}
+        <HoverDescription className={['basket', updated ? 'active' : '', props.className].join(' ')}
                           description={'Добавить в корзину'}
-                          isActive={isActive}
+                          isActive={!!updated}
                           oppositeDescription={'Убрать из корзины'}
-                          onClick={setInBasket}>
-            <img className={isActive ? 'active' : ''} src="/assets/images/bag.svg"/>
+                          onClick={onHoverDescriptionClick}
+        >
+            <img className={updated ? 'active' : ''} src="/assets/images/basket.svg"/>
             <Waiting isWaiting={isWaiting}/>
         </HoverDescription>
     );

@@ -9,7 +9,7 @@ import {setupStore} from "./reducers/store";
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
-const store = setupStore()
+export const store = setupStore()
 
 
 root.render(

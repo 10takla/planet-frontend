@@ -1,0 +1,112 @@
+.messages-block {
+  min-height: 8em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+
+  > .messages-list {
+    row-gap: 1em;
+    max-height: 40em;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+
+    > .item {
+      max-height: 7em;
+      column-gap: 0.5em;
+      border: 0.15em solid black;
+      border-radius: 0.3em;
+      padding: 0.7em;
+      background: rgba(196, 165, 238, 0.8);
+      flex-direction: column;
+      list-style-type: none;
+      display: flex;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateX(100%);
+      box-sizing: border-box;
+
+      & {
+        transition: all var(--animation-messages-item-duration);
+
+        &.item-enter-active {
+          opacity: 1;
+          transform: translateX(0%);
+        }
+
+        &.item-enter-done {
+          opacity: 1;
+          transform: translateX(0%);
+        }
+
+        &.item-exit-done {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+
+        &.item-exit-done {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+      }
+
+      > .top-side {
+        row-gap: 0.5em;
+        display: flex;
+
+        align-items: flex-start;
+        justify-content: space-between;
+
+        > span {
+
+          &.text {
+            word-break: break-word;
+            border-radius: 0.5em;
+            padding: 0.5em;
+            max-height: 4.6em;
+            width: 100%;
+            background: white;
+            box-sizing: border-box;
+            overflow-y: scroll;
+          }
+        }
+
+        > img {
+          width: 2.5em;
+        }
+      }
+
+      > .bottom-side {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: flex-end;
+
+        > span {
+          &.lifetime {
+
+          }
+
+          .date {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+
+  > .clear_logs {
+    align-self: flex-end;
+    height: 2em;;
+  }
+
+  .lack_of {
+    font-size: 1.1em;
+    padding: 0.5em;
+    border-radius: 0.4em;
+    background: rgb(255, 255, 255);
+  }
+}

@@ -2,29 +2,24 @@ import React, {FC, useEffect, useMemo, useRef, useState} from 'react';
 import {PerspectiveCamera} from "@react-three/drei";
 import * as THREE from 'three'
 import {useAppDispatch, useAppSelector} from "../../../../hooks/redux";
-import {storeStateSlice} from "../../../../reducers/slices/StoreStateSlice";
-import {ICameraProperties} from "../../../../types/store/threejs/sceneTypes";
-import {ICameraFocus} from "../../../../reducers/slices/PlanetStateSlice";
+import {planetSceneSlice, SlicePlanetSceneType} from "../../../../reducers/slices/scene/planetSceneSlice";
 
-interface ICamera extends ICameraProperties {
-    cameraFocus?: ICameraFocus
+interface ICamera {
+    slice: SlicePlanetSceneType
 }
 
-const Camera: FC<ICamera> = ({cameraFocus, ...props}) => {
+const Camera: FC<ICamera> = ({slice}) => {
     const dispatch = useAppDispatch()
     const cameraRef = useRef<THREE.Camera>(null)
+    const {focus: cameraFocus, ...props} = useAppSelector(state => state.planetSceneReducer[slice].scene.camera)
+    const {isStopCameraAnimation} = useAppSelector(state => state.planetSceneReducer[slice].events)
 
     const [intervalState, setIntervalState] = useState<string | number | NodeJS.Timer | undefined>();
-    const {
-        isStopCameraAnimation,
-        isActiveCameraAnimation,
-        isRepeatCameraAnimation
-    } = useAppSelector(state => state.storeStateReducer.events)
 
     useEffect(() => {
         if (props.enableAnimation && isStopCameraAnimation){
             clearInterval(intervalState)
-            dispatch(storeStateSlice.actions.setEvent({"isStopCameraAnimation": false}))
+            dispatch(planetSceneSlice.actions.setEvent({slice: slice, data: {"isStopCameraAnimation": false}}))
         }
     }, [isStopCameraAnimation]);
 
@@ -40,7 +35,7 @@ const Camera: FC<ICamera> = ({cameraFocus, ...props}) => {
                 const duration = 3000
                 let [count, N] = [1, Math.floor(way.length() * duration / 10)]
                 const stepsDelay = duration / N
-                dispatch(storeStateSlice.actions.setEvent({"isActiveCameraAnimation": true}))
+                dispatch(planetSceneSlice.actions.setEvent({slice: slice, data: {"isActiveCameraAnimation": true}}))
                 const interval = setInterval(() => {
                     const radius = (currentRadius - (currentRadius - plotRadius) * easeOutCubic(count / N))
                     const angle = new THREE.Vector3(1, 1, 1).copy(way)
@@ -48,7 +43,7 @@ const Camera: FC<ICamera> = ({cameraFocus, ...props}) => {
                     cameraRef.current && cameraRef.current.position.copy(normalize).multiplyScalar(radius)
                     count++
                     if (count >= N + 1) {
-                        dispatch(storeStateSlice.actions.setEvent({"isActiveCameraAnimation": false}))
+                        dispatch(planetSceneSlice.actions.setEvent({slice: slice, data:{"isActiveCameraAnimation": false}}))
                         clearInterval(interval)
                     }
                 }, stepsDelay)

@@ -6,18 +6,23 @@ export type AuthDataType = InputErrorType | 'token'
 
 export type AuthFormType = 'sign' | 'registration' | 'update'
 
-export type InputErrorType = 'username' | 'email' | 'password' | 'repeat_password'
+export type InputErrorType = 'username' | 'email' | 'password' | 'repeat_password' | 'status' | 'telegramName' | 'logo'
 
 export interface IInputError {
-    property: { name: InputErrorType; placeholder?: string, type?: React.HTMLInputTypeAttribute },
-    validate: (form: HTMLFormElement['elements'], errors?: string[]) => string[]
+    property: {
+        name: InputErrorType; placeholder?: string,
+        type?: React.HTMLInputTypeAttribute
+    },
+    value: string
+    isTextArea?: boolean
+    validate: (form: HTMLFormElement['elements'], name: InputErrorType, errors?: string[]) => string[]
     fieldsToTrackValidate?: InputErrorType[]
 }
 
 
 export interface IRequest {
     token?: string
-    method: "GET" | "PUT" | "POST"
+    method: "GET" | "PATCH" | "POST"
     pk?: string
 }
 

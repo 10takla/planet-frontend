@@ -1,0 +1,1 @@
+export type CurrencyType =  'dollar' | 'ruble' | 'eth' | 'point'

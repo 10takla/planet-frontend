@@ -3,8 +3,9 @@
 @import "ui/plots";
 @import "ui/basket";
 @import "ui/user";
+@import "ui/wallet";
 
-.modal-back {
+.modal-back.app-modal {
   position: absolute;
   display: flex;
   justify-content: center;
@@ -25,7 +26,7 @@
     max-height: 600px;
     pointer-events: auto;
     position: relative;
-    overflow: hidden;
+    overflow: scroll;
 
     > .head {
       display: flex;

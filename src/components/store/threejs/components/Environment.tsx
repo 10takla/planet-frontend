@@ -1,11 +1,17 @@
 import React, {FC} from 'react';
 import * as THREE from "three";
 import {useTexture} from "@react-three/drei";
-import {ISceneProperties} from "../../../../types/store/threejs/sceneTypes";
+import {useAppSelector} from "../../../../hooks/redux";
+import {ISliceState} from "../../../../types/store/scene/sceneTypes";
+import {SlicePlanetSceneType} from "../../../../reducers/slices/scene/planetSceneSlice";
 
+interface IEnvironment{
+    slice: SlicePlanetSceneType
+}
 
-const Environment:FC<ISceneProperties["environment"]> = ({...props}) => {
-    const texture = useTexture(props.source)
+const Environment:FC<IEnvironment> = ({slice}) => {
+    const props = useAppSelector(state => state.planetSceneReducer[slice].scene.environment)
+    const texture = useTexture(props?.source ?? "assets/textures/defaultTexture.png")
 
     return (
         <mesh>
