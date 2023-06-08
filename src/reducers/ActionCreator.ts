@@ -93,7 +93,8 @@ export const fetchCUD = <T = object>({endpoint, body, action}: IFetchAnyMethod) 
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(String(response.status));
+                    reject(response)
+                    // throw new Error(String(response.status));
                 }
                 if (action === 'delete'){
                     return null

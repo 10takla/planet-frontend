@@ -6,30 +6,33 @@ import './errorCommands.scss'
 
 
 interface IErrorCommands {
-    statusCode: Response["status"]
+    response: any
 }
 
 enum codeEnum {
     UNAUTH = 401,
 }
 
-const ErrorCommands: FC<IErrorCommands> = ({statusCode}) => {
+const ErrorCommands: FC<IErrorCommands> = ({response}) => {
     const dispatch = useAppDispatch()
 
     const commands = {
         [codeEnum.UNAUTH]: {
+            description: 'Вы не авторизованы.',
             text: 'Авторизоваться',
             command: () => dispatch(appStateSlice.actions.setActiveForm('sign'))
         }
     }
 
     const data = useMemo(() => {
-        if (statusCode === codeEnum.UNAUTH) {
-            return <Command {...commands[codeEnum.UNAUTH]}/>
+        if (response.status === codeEnum.UNAUTH) {
+            return <>Вы не авторизованы. <Command {...commands[codeEnum.UNAUTH]}/></>
         }
-        return statusCode
-    }, [statusCode]);
 
+        return response
+    }, [response]);
+
+    // @ts-ignore
     return (
         <span className={'error-command'}>
             {data}

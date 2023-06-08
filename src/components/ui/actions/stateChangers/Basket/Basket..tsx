@@ -9,9 +9,10 @@ import {useAppDispatch} from "../../../../../hooks/redux";
 import {planetStateSlice} from "../../../../../reducers/slices/scene/PlanetStateSlice";
 import {messagesStateSlice} from "../../../../../reducers/slices/app/MessagesStateSlice";
 import ErrorCommands from "../../../../commands/ErrorComands/ErrorCommands";
+import {ASSETS_URL} from "../../../../../config";
 
 
-interface IBasketComponent extends HTMLProps<HTMLElement>{
+interface IBasketComponent extends HTMLProps<HTMLElement> {
     basket: IBasket | null
     plotId: IPlot['id']
 }
@@ -31,7 +32,7 @@ const Basket: FC<IBasketComponent> = ({basket, plotId, ...props}) => {
 
     const onHoverDescriptionClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
         makeUpdate({
-            endpoint: 'basket/' + (updated ? `${updated.id}/` : '') as `${string}/` ,
+            endpoint: 'basket/' + (updated ? `${updated.id}/` : '') as `${string}/`,
             body: {
                 plot: plotId
             },
@@ -40,12 +41,10 @@ const Basket: FC<IBasketComponent> = ({basket, plotId, ...props}) => {
     }, [plotId, updated]);
 
     useEffect(() => {
-        if (error){
+        if (error) {
             dispatch(messagesStateSlice.actions.setLogs([{
                 text: (
-                    <>
-                        Вы не авторизованы. <ErrorCommands statusCode={Number(error)}/>
-                    </>
+                    <ErrorCommands response={error}/>
                 ),
                 date: new Date().toLocaleDateString(),
                 isNotice: true,
@@ -61,7 +60,7 @@ const Basket: FC<IBasketComponent> = ({basket, plotId, ...props}) => {
                           oppositeDescription={'Убрать из корзины'}
                           onClick={onHoverDescriptionClick}
         >
-            <img className={updated ? 'active' : ''} src="/assets/images/basket.svg"/>
+            <img className={updated ? 'active' : ''} src={ASSETS_URL + "/images/basket.svg"}/>
             <Waiting isWaiting={isWaiting}/>
         </HoverDescription>
     );

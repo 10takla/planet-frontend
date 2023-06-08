@@ -42,12 +42,12 @@ const Buying: FC<IBuyingComponent> = ({plotId, ...props}) => {
     }, []);
 
     useEffect(() => {
+        console.log(error)
         if (error){
             dispatch(messagesStateSlice.actions.setLogs([{
+
                 text: (
-                    <>
-                        Вы не авторизованы. <ErrorCommands statusCode={Number(error)}/>
-                    </>
+                        <ErrorCommands response={error}/>
                 ),
                 date: new Date().toLocaleDateString(),
                 isNotice: true,

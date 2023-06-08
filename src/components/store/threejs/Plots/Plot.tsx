@@ -19,20 +19,25 @@ interface IPlotComponent {
     planet: IPlanet
     activePlotId: IPlot['id'] | null | undefined
     slice: SlicePlanetSceneType
+    geo: any
 }
 
-const Plot: FC<IPlotComponent> = ({plot, slice, activePlotId, planet, children}) => {
+const Plot: FC<IPlotComponent> = ({plot, geo, slice, activePlotId, planet, children}) => {
     const dispatch = useAppDispatch()
     const actions = useAppSelector(state => (
         {...state.planetSceneReducer[slice].actions.plots, ...state.planetSceneReducer[slice].actions.planet}
     ))
     const props = useAppSelector(state => state.planetSceneReducer[slice].scene.plots!)
     const {plotClick} = useAppSelector(state => state.planetSceneReducer[slice].events)
+    const authUser = useAppSelector(state => state.userDataReducer.authUser)
 
     const plotRef = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.Material | THREE.Material[]>>(null);
-    const authUser = useAppSelector(state => state.userDataReducer.authUser)
     const [isHover, setHover] = useState<boolean>(false);
-    const geometry = useMemo(() => geometryToBuffer(plot.mesh, props.scale),
+    const geometry = useMemo(() => {
+            // return geo.geometry
+            return geometryToBuffer(plot.mesh, props.scale)
+        }
+        ,
         [props.scale, plot])
 
     const center = useMemo(() => {

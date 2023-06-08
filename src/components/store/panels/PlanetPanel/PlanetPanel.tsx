@@ -14,8 +14,8 @@ const PlanetPanel = () => {
         | 'rating' | 'plots_count' | 'type' | 'diameter'>[]
 
     const body = useMemo(() => {
-        const basePlotsFields = ["mesh", "area", "owner", 'surfaceArea', 'cost', "isSale", "color",]
-        const plotsFieldsIsAuth = authUser ? ['basket', 'owner', 'buying', 'markUp', 'price'] : []
+        const basePlotsFields = ["area", 'mesh', 'surfaceArea', 'cost', "isSale", "color",]
+        const plotsFieldsIsAuth = authUser ? ['basket', 'buying', 'markUp', 'price'] : []
         return {
             endpoint: 'planets/',
             body: {

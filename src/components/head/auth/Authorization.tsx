@@ -22,9 +22,9 @@ const Authorization = () => {
                     dispatch(userDataSlice.actions.setAuthUser(data))
                 })
                 .catch(error => {
-                    // dispatch(userDataSlice.actions.setAuthUser(null))
+                    error.detail === 'Invalid token.' && dispatch(userDataSlice.actions.setAuthUser(null))
                 })
-                .finally(()=> {
+                .finally(() => {
                     dispatch(appStateSlice.actions.setEvent({'isProcessAuth': false}))
                 })
         }

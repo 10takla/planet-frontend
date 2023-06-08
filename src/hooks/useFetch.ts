@@ -27,7 +27,7 @@ export const useFetchGet = <M extends AllowModels, RF>(dep: any[] = []) => {
 
 export const useFetchCRUDE = <T = object | null>(object: T | null, dep: any[] = []) => {
     const [updated, setUpdated] = useState(object);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<Response | null>(null);
     const [isWaiting, setIsWaiting] = useState(false);
     const dispatch = useAppDispatch()
 
@@ -49,7 +49,7 @@ export const useFetchCRUDE = <T = object | null>(object: T | null, dep: any[] = 
             })
     }, [dep]);
 
-    return [updated, makeUpdate, isWaiting, error] as [T | null, (action: IFetchAnyMethod) => void, boolean, string  | null]
+    return [updated, makeUpdate, isWaiting, error] as [T | null, (action: IFetchAnyMethod) => void, boolean, Response  | null]
 }
 
 export const useFetchCreateDestroy = <T = object>(object: T | null, fetchProps: IFetch): [boolean, T | null, () => void, boolean] => {

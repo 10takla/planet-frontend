@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useAppDispatch, useAppSelector} from "../../../hooks/redux";
 import {appStateSlice} from "../../../reducers/slices/app/AppStateSlice";
-import {ASSETS_URL, SERVER_HOSTS} from "../../../config";
+import {ASSETS_URL} from "../../../config";
 import Currency from "../../ui/info/plot/Currency";
-import UserFocus from "../../ui/userViews/UserFocus";
 import UserFirstView from "../../ui/userViews/UserFirstView/UserFirstView";
 
 const UserHead = () => {

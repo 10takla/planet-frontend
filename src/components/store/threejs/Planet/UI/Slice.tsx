@@ -33,7 +33,6 @@ const Slice: FC<IMesh> =
                     Object.entries(tmp).forEach(([key, value]) => {
                         if (!Object.keys(end_data).includes(key)) {
                             if (tmp) {
-                                console.log(ASSETS_URL, value)
                                 end_data = {...end_data, [key]: ASSETS_URL + value}
                             }
                         }
