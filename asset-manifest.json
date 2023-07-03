@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/planet-frontend/static/css/main.e8dc56f6.css",
-    "main.js": "/planet-frontend/static/js/main.76069351.js",
+    "main.css": "/planet-frontend/static/css/main.55cfe826.css",
+    "main.js": "/planet-frontend/static/js/main.2877cd3d.js",
     "index.html": "/planet-frontend/index.html",
-    "main.e8dc56f6.css.map": "/planet-frontend/static/css/main.e8dc56f6.css.map",
-    "main.76069351.js.map": "/planet-frontend/static/js/main.76069351.js.map"
+    "main.55cfe826.css.map": "/planet-frontend/static/css/main.55cfe826.css.map",
+    "main.2877cd3d.js.map": "/planet-frontend/static/js/main.2877cd3d.js.map"
   },
   "entrypoints": [
-    "static/css/main.e8dc56f6.css",
-    "static/js/main.76069351.js"
+    "static/css/main.55cfe826.css",
+    "static/js/main.2877cd3d.js"
   ]
 }
